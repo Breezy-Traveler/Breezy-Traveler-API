@@ -1,6 +1,6 @@
 class User < ApplicationRecord
     has_many :trips
-    validates :name, :password, presence: true
+    validates :name, presence: true
     validates :email, :username, presence: true, uniqueness: true
     before_save :encrypt_password
     before_create :generate_token
