@@ -22,4 +22,11 @@ RSpec.describe User, type: :model do
       expect(bad_user).to_not be_valid
     end
   end
+
+  describe "Associations" do
+    it "should have many trips" do
+      assoc = User.reflect_on_association(:trips)
+      expect(assoc.macro).to eq :has_many
+    end
+  end
 end
