@@ -2,9 +2,10 @@ class User < ApplicationRecord
     has_many :trips
     validates :name, presence: true
     validates :email, :username, presence: true, uniqueness: true
-    before_save :encrypt_password
+		attribute :password, :string
+		before_save :encrypt_password
     before_create :generate_token
-    attribute :password, :string
+
 
   def self.authenticate(email, password)
     user = self.find_by_email(email)
