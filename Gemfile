@@ -19,7 +19,7 @@ gem 'puma', '~> 3.7'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1', '>= 3.1.11'
 # Gemfile
-gem 'paperclip', '~> 5.1'
+# gem 'paperclip', '~> 5.1'
 gem 'aws-sdk', '~> 2.3.0'
 
 # Use Capistrano for deployment
