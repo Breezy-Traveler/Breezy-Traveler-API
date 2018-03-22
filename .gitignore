@@ -20,3 +20,5 @@
 .byebug_history
 database.yml
 .env
+
+.idea/
