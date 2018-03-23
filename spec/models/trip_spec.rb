@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Trip, type: :model do
 
   before(:each) do
-    @user = User.new(name: "Phyllis", email: "phyllis@test.com", username: "phyllis")
+    @user = User.new(name: "Phyllis", email: "phyllis@test.com", username: "phyllis", password: "long_enough")
     @a_public_trip = TripPublic.new(place: "SF", start_date: DateTime.now.utc, end_date: DateTime.now.utc, trip: nil, user: @user)
   end
 
