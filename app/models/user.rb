@@ -1,7 +1,8 @@
 class User < ApplicationRecord
-    attribute :password, :string
-    validates :name, :password, length: { in: 6..20 }, presence: true
+    validates :name, presence: true
     validates :email, :username, presence: true, uniqueness: true
+    attribute :password, :string
+    validates :password, length: 6..20, presence: true
 
     has_many :trips
     has_many :trip_publics
