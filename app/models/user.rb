@@ -1,8 +1,11 @@
 class User < ApplicationRecord
-    has_many :trips
-    validates :name, presence: true
+    attribute :password, :string
+    validates :name, :password, presence: true
     validates :email, :username, presence: true, uniqueness: true
-		attribute :password, :string
+
+    has_many :trips
+    has_many :trip_publics
+
 		before_save :encrypt_password
     before_create :generate_token
 

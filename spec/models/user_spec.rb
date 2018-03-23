@@ -33,5 +33,9 @@ RSpec.describe User, type: :model do
       assoc = User.reflect_on_association(:trips)
       expect(assoc.macro).to eq :has_many
     end
+    it "should have a trip_public" do
+      assoc = User.reflect_on_association(:trip_publics)
+      expect(assoc.macro).to eq :has_many
+    end
   end
 end
