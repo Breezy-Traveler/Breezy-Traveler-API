@@ -16,6 +16,7 @@ class TripsController < ApplicationController
   # POST /trips
   def create
     @trip = Trip.new(trip_params)
+
     # Add the current logged in user as the creator of the trip
     @trip.user = current_user
 

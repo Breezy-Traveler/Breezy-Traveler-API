@@ -17,6 +17,9 @@ class TripPublicsController < ApplicationController
   def create
     @trip_public = TripPublic.new(trip_public_params)
 
+    # Add the current logged in user as the creator of the trip
+    @trip_public.user = current_user
+
     if @trip_public.save
       render json: @trip_public, status: :created, location: @trip_public
     else
