@@ -17,7 +17,10 @@ gem 'puma', '~> 3.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1', '>= 3.1.11'
+# Gemfile
+# gem 'paperclip', '~> 5.1'
+gem 'aws-sdk', '~> 2.3.0'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -35,6 +38,11 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
+group :test do
+  gem 'rspec-rails', '~> 3.7', '>= 3.7.2'
+  gem 'database_cleaner', '~> 1.6', '>= 1.6.2'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

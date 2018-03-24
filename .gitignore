@@ -19,3 +19,9 @@
 
 .byebug_history
 database.yml
+
+# local variables
+.env
+config/local_env.yml
+
+.idea/

@@ -16,6 +16,8 @@ class TripsController < ApplicationController
   # POST /trips
   def create
     @trip = Trip.new(trip_params)
+    # Add the current logged in user as the creator of the trip
+    @trip.user = current_user
 
     if @trip.save
       render json: @trip, status: :created, location: @trip
@@ -46,6 +48,6 @@ class TripsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def trip_params
-      params.require(:trip).permit(:place, :start_date, :end_date, :is_public)
+      params.permit(:place, :start_date, :end_date, :is_public)
     end
 end
