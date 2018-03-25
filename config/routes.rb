@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
 
-
   resources :users, expect: [:create] do
     resources :trips do
       resources :hotels
+      resources :sites
     end
   end
 
