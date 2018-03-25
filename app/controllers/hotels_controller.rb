@@ -24,7 +24,7 @@ class HotelsController < ApplicationController
     @hotel.user = current_user
 
     if @hotel.save
-      render json: @hotel, status: :created, location: @hotel
+      render json: @hotel, status: :created # , location: @hotel
     else
       render json: @hotel.errors, status: :unprocessable_entity
     end
