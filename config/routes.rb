@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
   resources :hotels
-  resources :trip_publics
 
   resources :users, expect: [:create]
   post '/register', to: 'users#create'

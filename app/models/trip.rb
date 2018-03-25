@@ -1,6 +1,5 @@
 class Trip < ApplicationRecord
-  validates :place, presence: true
+  validates :place, :is_public, presence: true
 
   belongs_to :user
-  has_one :trip_public
 end
