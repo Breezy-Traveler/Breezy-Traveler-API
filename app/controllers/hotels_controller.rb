@@ -17,6 +17,9 @@ class HotelsController < ApplicationController
   def create
     @hotel = Hotel.new(hotel_params)
 
+    # TODO: add to trip defined in the url
+    @hotel.trip = @trip
+
     # Add the current logged in user as the creator of the trip
     @hotel.user = current_user
 
@@ -49,6 +52,9 @@ class HotelsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def hotel_params
-      params.require(:hotel).permit(:title, :address, :ratings, :notes, :is_visisted)
+      @trip = Trip.find(params[:trip_id])
+
+      # FIXME: assign the trip using params? or the url's :trip_id
+      params.permit(:title, :address, :ratings, :notes, :is_visited)
     end
 end

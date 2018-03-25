@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
 
-  resources :hotels
 
-  resources :users, expect: [:create]
+  resources :users, expect: [:create] do
+    resources :trips do
+      resources :hotels
+    end
+  end
+
   post '/register', to: 'users#create'
-
-  resources :trips
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
