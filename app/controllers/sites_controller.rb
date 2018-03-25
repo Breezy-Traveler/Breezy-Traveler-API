@@ -3,7 +3,7 @@ class SitesController < ApplicationController
 
   # GET /sites
   def index
-    @sites = Site.all
+    @sites = Site.all.where(type: "Site")
 
     render json: @sites
   end
@@ -17,8 +17,14 @@ class SitesController < ApplicationController
   def create
     @site = Site.new(site_params)
 
+    # TODO: add to trip defined in the url
+    @site.trip = @trip
+
+    # Add the current logged in user as the creator of the trip
+    @site.user = current_user
+
     if @site.save
-      render json: @site, status: :created, location: @site
+      render json: @site, status: :created #, location: @site
     else
       render json: @site.errors, status: :unprocessable_entity
     end
@@ -46,6 +52,9 @@ class SitesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def site_params
-      params.fetch(:site, {})
+      @trip = Trip.find(params[:trip_id])
+
+      # FIXME: assign the trip using params? or the url's :trip_id
+      params.permit(:title, :address, :ratings, :notes, :is_visited)
     end
 end

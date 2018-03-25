@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_many :trips
   has_many :hotels
+  has_many :sites
 
   before_save :encrypt_password
   before_create :generate_token
