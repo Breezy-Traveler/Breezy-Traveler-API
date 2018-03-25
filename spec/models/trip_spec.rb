@@ -8,16 +8,27 @@ RSpec.describe Trip, type: :model do
 
   describe "Validations" do
 
-    it "is valid with valid attributes" do
-      trip = Trip.new(
-        place: "SF",
-        start_date: DateTime.now.utc,
-				end_date: DateTime.now.utc,
-				is_public: true,
-        user: @user
-      )
-      expect(trip).to be_valid
-    end
+		it "is valid with valid attributes" do
+			trip = Trip.new(
+					place: "SF",
+					start_date: DateTime.now.utc,
+					end_date: DateTime.now.utc,
+					is_public: true,
+					user: @user
+			)
+			expect(trip).to be_valid
+		end
+
+		it "is valid with valid attributes" do
+			trip = Trip.new(
+					place: "SF",
+					start_date: DateTime.now.utc,
+					end_date: DateTime.now.utc,
+					is_public: false,
+					user: @user
+			)
+			expect(trip).to be_valid
+		end
 
 		it "is invalid without a place" do
 			bad_trip = Trip.new(
