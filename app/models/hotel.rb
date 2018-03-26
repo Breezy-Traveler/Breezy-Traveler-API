@@ -6,5 +6,4 @@ class Hotel < ApplicationRecord
   validates_inclusion_of :is_visited, :in => [true, false]
 
   belongs_to :trip
-  belongs_to :user
 end

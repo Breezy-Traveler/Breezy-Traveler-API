@@ -14,8 +14,7 @@ RSpec.describe Hotel, type: :model do
           address: "1234 ABC Rd",
           ratings: 4,
           is_visited: true,
-          trip: @trip,
-          user: @user
+          trip: @trip
       )
       expect(hotel).to be_valid
     end
@@ -26,8 +25,7 @@ RSpec.describe Hotel, type: :model do
           address: "1234 ABC Rd",
           ratings: 4,
           is_visited: true,
-          trip: @trip,
-          user: @user
+          trip: @trip
       )
       expect(hotel).to be_valid
     end
@@ -38,8 +36,7 @@ RSpec.describe Hotel, type: :model do
           address: nil,
           ratings: 4,
           is_visited: true,
-          trip: @trip,
-          user: @user
+          trip: @trip
       )
       expect(hotel).to be_valid
     end
@@ -50,8 +47,7 @@ RSpec.describe Hotel, type: :model do
           address: "1234 ABC Rd",
           ratings: nil,
           is_visited: true,
-          trip: @trip,
-          user: @user
+          trip: @trip
       )
       expect(hotel).to be_valid
     end
@@ -63,8 +59,7 @@ RSpec.describe Hotel, type: :model do
           address: "1234 ABC Rd",
           ratings: 4,
           is_visited: true,
-          trip: @trip,
-          user: @user
+          trip: @trip
       )
       expect(bad_hotel).to_not be_valid
     end
@@ -75,8 +70,7 @@ RSpec.describe Hotel, type: :model do
           address: "1234 ABC Rd",
           ratings: 4,
           is_visited: nil,
-          trip: @trip,
-          user: @user
+          trip: @trip
       )
       expect(bad_hotel).to_not be_valid
     end
@@ -87,20 +81,7 @@ RSpec.describe Hotel, type: :model do
           address: "1234 ABC Rd",
           ratings: 4,
           is_visited: true,
-          trip: nil,
-          user: @user
-      )
-      expect(bad_hotel).to_not be_valid
-    end
-    it "should be invalid without a user" do
-      bad_hotel = Hotel.new(
-          title: "Days Inn",
-          notes: "I liked the tv that was in my room",
-          address: "1234 ABC Rd",
-          ratings: 4,
-          is_visited: true,
-          trip: @trip,
-          user: nil
+          trip: nil
       )
       expect(bad_hotel).to_not be_valid
     end
@@ -109,10 +90,6 @@ RSpec.describe Hotel, type: :model do
   describe "Associations" do
     it "should belong to a trip" do
       assoc = Hotel.reflect_on_association(:trip)
-      expect(assoc.macro).to eq :belongs_to
-    end
-    it "should belong to a user" do
-      assoc = Hotel.reflect_on_association(:user)
       expect(assoc.macro).to eq :belongs_to
     end
   end

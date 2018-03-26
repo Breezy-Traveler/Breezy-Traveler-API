@@ -5,8 +5,9 @@ class User < ApplicationRecord
   validates :password, length: 6..20, presence: true
 
   has_many :trips
-  has_many :hotels
-  has_many :sites
+
+  has_many :hotels, through: :trips
+  has_many :sites, through: :trips
 
   before_save :encrypt_password
   before_create :generate_token

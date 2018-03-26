@@ -20,9 +20,6 @@ class HotelsController < ApplicationController
     # TODO: add to trip defined in the url
     @hotel.trip = @trip
 
-    # Add the current logged in user as the creator of the trip
-    @hotel.user = current_user
-
     if @hotel.save
       render json: @hotel, status: :created # , location: @hotel
     else

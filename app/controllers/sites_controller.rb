@@ -20,9 +20,6 @@ class SitesController < ApplicationController
     # TODO: add to trip defined in the url
     @site.trip = @trip
 
-    # Add the current logged in user as the creator of the trip
-    @site.user = current_user
-
     if @site.save
       render json: @site, status: :created #, location: @site
     else
