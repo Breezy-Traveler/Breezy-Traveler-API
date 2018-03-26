@@ -1,11 +1,16 @@
 class User < ApplicationRecord
-    has_many :trips
-    validates :name, presence: true
-    validates :email, :username, presence: true, uniqueness: true
-		attribute :password, :string
-		before_save :encrypt_password
-    before_create :generate_token
+  validates_presence_of :name
+  validates :email, :username, presence: true, uniqueness: true
+  attribute :password, :string
+  validates :password, length: 6..20, presence: true
 
+  has_many :trips
+
+  has_many :hotels, through: :trips
+  has_many :sites, through: :trips
+
+  before_save :encrypt_password
+  before_create :generate_token
 
   def self.authenticate(email, password)
     user = self.find_by_email(email)

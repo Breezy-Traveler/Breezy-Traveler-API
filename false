@@ -1,0 +1,2 @@
+      invoke  active_record
+      create    db/migrate/20180325213341_create_hotels2.rb
