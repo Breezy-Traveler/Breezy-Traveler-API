@@ -15,14 +15,13 @@ class RegisterLoginController < ApplicationController
   def login
     @user = authenticate_user
 
+    # did authenticate?
     if @user
       @user.generate_token
 
+      # can save ok?
       if @user.save!
-
-        new_user = {:id => @user.id, :name => @user.name, :username => @user.username, :token => @user.token}
-
-        render json: new_user, status: :created
+        render json: @user, status: :created
       else
         render json: @user.errors, status: :unprocessable_entity
       end
