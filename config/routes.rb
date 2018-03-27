@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
 
-  resources :users, expect: [:create] do
-    resources :trips do
-      resources :hotels
-      resources :sites
-    end
+  resources :users, except: [:create] do
+		collection do
+	    resources :trips do
+	      resources :hotels
+	      resources :sites
+	    end
+		end
   end
 
   post '/register', to: 'users#create'
