@@ -21,7 +21,7 @@ class TripsController < ApplicationController
     @trip.user = current_user
 
     if @trip.save
-      render json: @trip, status: :created #, location: @trip
+      render json: @trip, status: :created
     else
       render json: @trip.errors, status: :unprocessable_entity
     end
@@ -44,7 +44,7 @@ class TripsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_trip
-      @trip = Trip.find(params[:id])
+      @trip = Trip.includes(:hotels, :sites).find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
