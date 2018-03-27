@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 		end
   end
 
-  post '/register', to: 'users#create'
+  post '/register', to: 'register_login#register'
+	post '/login', to: 'register_login#login'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

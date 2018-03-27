@@ -10,7 +10,6 @@ class User < ApplicationRecord
   has_many :sites, through: :trips
 
   before_save :encrypt_password
-  before_create :generate_token
 
   def self.authenticate(email, password)
     user = self.find_by_email(email)
@@ -22,7 +21,7 @@ class User < ApplicationRecord
   end
 
   def encrypt_password
-    if password.present?
+    if password.present? and password_salt.present? == false
       self.password_salt = BCrypt::Engine.generate_salt
       self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
     end
