@@ -9,7 +9,7 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.5'
 
-gem 'pg'
+# gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -30,6 +30,14 @@ gem 'aws-sdk', '~> 2.3.0'
 
 # Serializers enable us to specify which properties we want to render.
 gem 'active_model_serializers'
+
+group :development, :test do
+  gem 'pg'
+end
+
+group :production do
+  gem 'pg'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
