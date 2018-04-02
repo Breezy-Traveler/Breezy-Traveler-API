@@ -13,5 +13,6 @@ Rails.application.routes.draw do
 	post '/login', to: 'register_login#login'
 
   get '/image_search', to: 'getty_images#index'
+  get '/quote_of_the_day', to: 'quote_of_the_day#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

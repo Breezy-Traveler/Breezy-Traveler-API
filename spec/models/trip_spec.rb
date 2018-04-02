@@ -4,6 +4,7 @@ RSpec.describe Trip, type: :model do
 
   before(:each) do
     @user = User.new(name: "Phyllis", email: "phyllis@test.com", username: "phyllis", password: "long_enough")
+    @cover_image = 'https://media.gettyimages.com/photos/oberbaumbruecke-winter-berlin-with-frozen-spree-river-picture-id861705364?b=1\u0026k=6\u0026m=861705364\u0026s=170x170\u0026h=Z7N6H6OMGiiO_v-6PNF4vvup2zUvuD9hv0SpsQ4vcYY='
   end
 
   describe "Validations" do
@@ -14,6 +15,7 @@ RSpec.describe Trip, type: :model do
 					start_date: DateTime.now.utc,
 					end_date: DateTime.now.utc,
 					is_public: true,
+          cover_image_url: @cover_image,
 					user: @user
 			)
 			expect(trip).to be_valid
@@ -25,6 +27,7 @@ RSpec.describe Trip, type: :model do
 					start_date: DateTime.now.utc,
 					end_date: DateTime.now.utc,
 					is_public: false,
+					cover_image_url: @cover_image,
 					user: @user
 			)
 			expect(trip).to be_valid
@@ -36,6 +39,7 @@ RSpec.describe Trip, type: :model do
 				start_date: DateTime.now.utc,
 				end_date: DateTime.now.utc,
 				is_public: true,
+				cover_image_url: @cover_image,
 				user: @user
 			)
       expect(bad_trip).to_not be_valid
@@ -47,6 +51,7 @@ RSpec.describe Trip, type: :model do
         start_date: nil,
 				end_date: DateTime.now.utc,
 				is_public: true,
+				cover_image_url: @cover_image,
         user: @user
       )
       expect(trip).to be_valid
@@ -54,13 +59,26 @@ RSpec.describe Trip, type: :model do
 
 		it "is valid without a end_date" do
 			trip = Trip.new(
-				place: "SF",
-				start_date: DateTime.now.utc,
-				end_date: nil,
-				is_public: true,
-				user: @user
+					place: "SF",
+					start_date: DateTime.now.utc,
+					end_date: nil,
+					is_public: true,
+					cover_image_url: @cover_image,
+					user: @user
 			)
-      expect(trip).to be_valid
+			expect(trip).to be_valid
+		end
+
+		it "is valid without a cover_image_url" do
+			trip = Trip.new(
+					place: "SF",
+					start_date: DateTime.now.utc,
+					end_date: nil,
+					is_public: true,
+					cover_image_url: nil,
+					user: @user
+			)
+			expect(trip).to be_valid
 		end
 
     it "is invalid without a user" do
@@ -69,6 +87,7 @@ RSpec.describe Trip, type: :model do
 				start_date: DateTime.now.utc,
 				end_date: DateTime.now.utc,
 				is_public: true,
+				cover_image_url: @cover_image,
 				user: nil
 			)
       expect(bad_trip).to_not be_valid
