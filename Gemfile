@@ -29,9 +29,6 @@ gem 'aws-sdk', '~> 2.3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-# HTTP (The Gem! a.k.a. http.rb) - a fast Ruby HTTP client with a chainable API, streaming support, and timeouts
-gem 'http'
-
 
 # Serializers enable us to specify which properties we want to render.
 gem 'active_model_serializers'

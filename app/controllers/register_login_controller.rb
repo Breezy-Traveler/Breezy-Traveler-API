@@ -26,20 +26,23 @@ class RegisterLoginController < ApplicationController
         render json: @user.errors, status: :unprocessable_entity
       end
     else
-      render_unauthorized("User: Not authorized")
+      render_unauthorized("Invalid Login")
     end
 
   end
 
   private
-
     def authenticate_user
-      auth_params = params.permit(:email, :password)
+      auth_params = params.permit(:username, :password)
 
-      user = User.authenticate(auth_params[:email], auth_params[:password])
-      user.password = auth_params[:password]
+      user = User.authenticate(auth_params[:username], auth_params[:password])
+      if user
+        user.password = auth_params[:password]
 
-      user
+        user
+      else
+        nil
+      end
     end
 
     # Only allow a trusted parameter "white list" through.
