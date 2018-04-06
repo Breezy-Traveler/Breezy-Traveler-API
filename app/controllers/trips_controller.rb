@@ -10,7 +10,9 @@ class TripsController < ApplicationController
 
   # GET /trips/1
   def show
-    render json: @trip
+    @trips = Trip.find_by_username(current_user.username)
+
+    render json: @trips
   end
 
   # POST /trips
