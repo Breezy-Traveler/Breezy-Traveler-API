@@ -3,16 +3,14 @@ class TripsController < ApplicationController
 
   # GET /trips
   def index
-    @trips = Trip.all
+    @trips = Trip.where(user: current_user)
 
     render json: @trips
   end
 
   # GET /trips/1
   def show
-    @trips = Trip.find_by_username(current_user.username)
-
-    render json: @trips
+    render json: @trip
   end
 
   # POST /trips
