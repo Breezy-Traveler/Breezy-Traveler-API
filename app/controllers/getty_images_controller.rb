@@ -17,14 +17,21 @@ class GettyImagesController < ApplicationController
     term = params[:search_term]
 
     if term
-      response = HTTP["Api-Key" => ENV["GETTY-APP-KEY"]]
+      response = HTTP
+                     .headers("Api-Key" => ENV["GETTY-APP-KEY"])
                      .get("https://api.gettyimages.com/v3/search/images",
                           :params => {
                               :fields => "thumb",
                               :phrase => term
                           })
 
-      render json: response, serializer: GettyImagesSerializer, root: "images"
+      if response.code == 200
+        render json: response, serializer: GettyImagesSerializer, root: "images"
+      else
+        render json: { message: "Getty Response Failed: #{response.body.to_s}" }, status: :unauthorized
+      end
+    else
+      render json: { message: "Bad Request"}, status: :bad_request
     end
   end
 end
