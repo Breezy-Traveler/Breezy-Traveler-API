@@ -3,7 +3,7 @@ class HotelsController < ApplicationController
 
   # GET /hotels
   def index
-    @hotels = Hotel.all.where(type: nil)
+    @hotels = Hotel.all.where(user: current_user, type: nil)
 
     render json: @hotels
   end

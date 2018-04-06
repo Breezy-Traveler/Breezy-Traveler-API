@@ -3,7 +3,7 @@ class SitesController < ApplicationController
 
   # GET /sites
   def index
-    @sites = Site.all.where(type: "Site")
+    @sites = Site.all.where(user: current_user, type: "Site")
 
     render json: @sites
   end
