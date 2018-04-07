@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Hotel, type: :model do
   before(:each) do
     @user = User.new(name: "Phyllis", email: "phyllis@test.com", username: "phyllis", password: "long_enough")
-    @trip = Trip.new(place: "SF", start_date: DateTime.now.utc, end_date: DateTime.now.utc, is_public: false, user: @user)
+    @trip = Trip.new(place: "SF", start_date: DateTime.now.utc, end_date: DateTime.now.utc, is_public: false, notes: "", user: @user)
   end
 
   describe "Validations" do
