@@ -16,6 +16,7 @@ RSpec.describe Trip, type: :model do
 					end_date: DateTime.now.utc,
 					is_public: true,
           cover_image_url: @cover_image,
+					notes: "my notes",
 					user: @user
 			)
 			expect(trip).to be_valid
@@ -28,6 +29,7 @@ RSpec.describe Trip, type: :model do
 					end_date: DateTime.now.utc,
 					is_public: false,
 					cover_image_url: @cover_image,
+					notes: "my notes",
 					user: @user
 			)
 			expect(trip).to be_valid
@@ -40,6 +42,7 @@ RSpec.describe Trip, type: :model do
 				end_date: DateTime.now.utc,
 				is_public: true,
 				cover_image_url: @cover_image,
+				notes: "my notes",
 				user: @user
 			)
       expect(bad_trip).to_not be_valid
@@ -52,6 +55,7 @@ RSpec.describe Trip, type: :model do
 				end_date: DateTime.now.utc,
 				is_public: true,
 				cover_image_url: @cover_image,
+				notes: "my notes",
         user: @user
       )
       expect(trip).to be_valid
@@ -64,6 +68,7 @@ RSpec.describe Trip, type: :model do
 					end_date: nil,
 					is_public: true,
 					cover_image_url: @cover_image,
+					notes: "my notes",
 					user: @user
 			)
 			expect(trip).to be_valid
@@ -76,6 +81,20 @@ RSpec.describe Trip, type: :model do
 					end_date: nil,
 					is_public: true,
 					cover_image_url: nil,
+					notes: "my notes",
+					user: @user
+			)
+			expect(trip).to be_valid
+		end
+
+		it "is valid without notes" do
+			trip = Trip.new(
+					place: "SF",
+					start_date: DateTime.now.utc,
+					end_date: DateTime.now.utc,
+					is_public: true,
+					cover_image_url: @cover_image,
+					notes: nil,
 					user: @user
 			)
 			expect(trip).to be_valid
@@ -88,6 +107,7 @@ RSpec.describe Trip, type: :model do
 				end_date: DateTime.now.utc,
 				is_public: true,
 				cover_image_url: @cover_image,
+				notes: "my notes",
 				user: nil
 			)
       expect(bad_trip).to_not be_valid
