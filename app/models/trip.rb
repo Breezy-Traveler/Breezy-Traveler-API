@@ -1,5 +1,6 @@
 class Trip < ApplicationRecord
   validates_presence_of :place
+  validates_presence_of :cover_image_url
 
   validates_inclusion_of :is_public, :in => [true, false]
 
