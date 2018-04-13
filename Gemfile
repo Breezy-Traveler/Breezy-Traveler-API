@@ -9,7 +9,7 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.5'
-
+gem 'pg'
 # HTTP (The Gem! a.k.a. http.rb) - a fast Ruby HTTP client with a chainable API, streaming support, and timeouts
 gem 'http', '~> 3.0'
 # Use Puma as the app server
@@ -34,13 +34,13 @@ gem 'aws-sdk', '~> 2.3.0'
 # Serializers enable us to specify which properties we want to render.
 gem 'active_model_serializers'
 
-group :development, :test do
-  gem 'pg'
-end
-
-group :production do
-  gem 'pg'
-end
+# group :development, :test do
+#   gem 'pg'
+# end
+#
+# group :production do
+#
+# end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
