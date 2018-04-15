@@ -27,13 +27,8 @@ RSpec.describe User, type: :model do
       expect(bad_user).to_not be_valid
     end
 
-    it "is invalid without a short password" do
+    it "is invalid with a short password" do
       bad_user = User.new(name: "Erick", email: "e@test.com", username: "e", password: "12345")
-      expect(bad_user).to_not be_valid
-    end
-
-    it "is invalid without a long password" do
-      bad_user = User.new(name: "Erick", email: "e@test.com", username: "e", password: "123456789012345678901")
       expect(bad_user).to_not be_valid
     end
   end

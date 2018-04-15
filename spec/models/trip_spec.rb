@@ -74,8 +74,8 @@ RSpec.describe Trip, type: :model do
 			expect(trip).to be_valid
 		end
 
-		it "is invalid without a cover_image_url" do
-			bad_trip = Trip.new(
+		it "is valid without a cover_image_url" do
+			trip = Trip.new(
 					place: "SF",
 					start_date: DateTime.now.utc,
 					end_date: nil,
@@ -84,7 +84,7 @@ RSpec.describe Trip, type: :model do
 					notes: "my notes",
 					user: @user
 			)
-			expect(bad_trip).to_not be_valid
+			expect(trip).to be_valid
 		end
 
 		it "is valid without notes" do

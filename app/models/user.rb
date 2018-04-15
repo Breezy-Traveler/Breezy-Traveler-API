@@ -2,7 +2,7 @@ class User < ApplicationRecord
   validates_presence_of :name
   validates :email, :username, presence: true, uniqueness: true
   attribute :password, :string
-  validates :password, length: 6..20, presence: true
+  validates :password, length: { minimum: 6 }, presence: true
 
   has_many :trips
 
