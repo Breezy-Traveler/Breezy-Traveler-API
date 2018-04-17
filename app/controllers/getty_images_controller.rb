@@ -21,7 +21,7 @@ class GettyImagesController < ApplicationController
                      .headers("Api-Key" => ENV["GETTY-APP-KEY"])
                      .get("https://api.gettyimages.com/v3/search/images",
                           :params => {
-                              :fields => "thumb",
+                              :fields => "comp",
                               :phrase => term
                           })
 
