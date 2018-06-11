@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180415234912) do
+ActiveRecord::Schema.define(version: 20180610034931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,9 +33,9 @@ ActiveRecord::Schema.define(version: 20180415234912) do
     t.bigint "user_id"
     t.boolean "is_public"
     t.string "cover_image_url"
-    t.string "notes"
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.string "notes", default: "", null: false
+    t.string "start_date"
+    t.string "end_date"
     t.index ["user_id"], name: "index_trips_on_user_id"
   end
 
@@ -48,6 +48,10 @@ ActiveRecord::Schema.define(version: 20180415234912) do
     t.string "token"
     t.string "password_hash"
     t.string "password_salt"
+    t.string "image_data_file_name"
+    t.string "image_data_content_type"
+    t.integer "image_data_file_size"
+    t.datetime "image_data_updated_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["token"], name: "index_users_on_token"
     t.index ["username"], name: "index_users_on_username", unique: true

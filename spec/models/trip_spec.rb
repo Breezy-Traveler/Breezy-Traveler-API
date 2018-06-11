@@ -87,14 +87,27 @@ RSpec.describe Trip, type: :model do
 			expect(trip).to be_valid
 		end
 
-		it "is valid without notes" do
-			trip = Trip.new(
+		it "is invalid without notes" do
+			bad_trip = Trip.new(
 					place: "SF",
 					start_date: DateTime.now.utc,
 					end_date: DateTime.now.utc,
 					is_public: true,
 					cover_image_url: @cover_image,
 					notes: nil,
+					user: @user
+			)
+			expect(bad_trip).to_not be_valid
+		end
+
+		it "is valid with blank notes" do
+			trip = Trip.new(
+					place: "SF",
+					start_date: DateTime.now.utc,
+					end_date: DateTime.now.utc,
+					is_public: true,
+					cover_image_url: @cover_image,
+					notes: "",
 					user: @user
 			)
 			expect(trip).to be_valid
