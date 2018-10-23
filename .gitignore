@@ -19,6 +19,8 @@
 
 .byebug_history
 database.yml
+.DS_Store
+*.idea
 
 # local variables
 .env
