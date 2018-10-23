@@ -35,6 +35,16 @@ app.use(exp.static('./public'));
 require('./controllers/trips')(app); // load our routes and pass to our app
 
 
+// Database configuration ==============================================================
+const mongoose = require('mongoose');
+const dbConfig = require('./src/config/database');
+
+mongoose.connect(dbConfig.uri, {
+  useNewUrlParser: true
+}); // connect our database
+mongoose.set('debug', true);
+
+
 // LAUNCH =============================================================================
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
