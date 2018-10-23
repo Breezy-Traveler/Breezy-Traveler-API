@@ -1,0 +1,36 @@
+{
+  "name": "breezy-traveler-api",
+  "version": "1.0.0",
+  "description": "API service for a client iOS app",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Breezy-Traveler/Breezy-Traveler-API.git"
+  },
+  "author": "Breezy Traveler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Breezy-Traveler/Breezy-Traveler-API/issues"
+  },
+  "homepage": "https://github.com/Breezy-Traveler/Breezy-Traveler-API#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "mocha": "^5.2.0",
+    "mongod": "^2.0.0",
+    "mongoose": "^5.3.6",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0"
+  }
+}
