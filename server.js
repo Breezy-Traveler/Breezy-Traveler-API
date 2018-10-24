@@ -37,11 +37,8 @@ require('./controllers/trips')(app); // load our routes and pass to our app
 
 // Database configuration ==============================================================
 const mongoose = require('mongoose');
-const URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/breezy-traveler';
-
-mongoose.connect(URI, {
-  useNewUrlParser: true
-}); // connect our database
+const mongoUri = process.env.MONGODB_URI;
+mongoose.connect( mongoUri, { useNewUrlParser: true });
 mongoose.set('debug', true);
 
 
