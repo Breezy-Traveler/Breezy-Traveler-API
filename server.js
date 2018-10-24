@@ -19,10 +19,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // TEMPLATE configuration ===============================================================
-app.engine('hbs', exphbs({
-  defaultLayout: 'main',
-  extname: 'hbs'
-}));
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: 'hbs' }));
 app.set('view engine', 'hbs');
 
 
