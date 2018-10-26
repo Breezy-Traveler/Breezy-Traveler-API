@@ -1,11 +1,13 @@
 require('dotenv').config();
 const exp = require('express');
 const app = exp();
-
+const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+
+const TripModel = require('./models/trips');
 
 
 // MIDDLEWARE configuration ============================================================
@@ -27,16 +29,48 @@ app.set('view engine', 'hbs');
 app.use(exp.static('./public'));
 
 
-// ROUTES =============================================================================
+// CONTROLLERS =============================================================================
 // load our routes and pass to our app
-require('./controllers/trips')(app); // load our routes and pass to our app
+// const tripsController = require('./controllers/trips');
+// app.use('', tripsController);
+app.disable('etag');
+
+app.get('/', (req, res) => {
+  res.send('awesome')
+});
+
+// READ all trips
+app.get('/trips', (req, res) => {
+  TripModel.find({}, (err, trips) => {
+    res.json({ trips: trips })
+  });
+});
+
+// CREATE a Trip
+app.post('/trips', (req, res) => {
+
+  TripModel.create( {isPublic: false, place: 'London'}, function(err, trip)  {
+    console.log('hello again!!!!!!!!');
+    if (err) {
+      console.log(err)
+    } else {
+      console.log(trip)
+    }
+  })
+});
 
 
 // Database configuration ==============================================================
-const mongoose = require('mongoose');
-const mongoUri = process.env.MONGODB_URI;
-mongoose.connect( mongoUri, { useNewUrlParser: true });
+const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/breezy";
+mongoose.Promise = global.Promise;
+mongoose.connect(
+  mongoUri, { useNewUrlParser: true }, function(error) {
+    if (error) {console.log(error.message)}
+    else {console.log('connected to mongoose')}
+  }
+);
 mongoose.set('debug', true);
+
 
 
 // LAUNCH =============================================================================
