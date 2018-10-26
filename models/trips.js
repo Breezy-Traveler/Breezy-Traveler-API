@@ -1,25 +1,25 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TripSchema = new Schema({
-  createdAt: { type: Date },
-  updatedAt: { type: Date },
-  place: { type: String },
-  isPublic: { type: Boolean }
-});
-
 // const TripSchema = new Schema({
-//   createdAt     : { type: Date    },
-//   updatedAt     : { type: Date    },
-//   isPublic      : { type: Boolean },
-//   place         : { type: String  },
-//   notes         : { type: String  },
-//   coverImageUrl : { type: String  },
-//   hotels        : { type: Array   },
-//   sites         : { type: Array   },
-//   startDate     : { type: Date    },
-//   endDate       : { type: Date    }
+//   createdAt: { type: Date },
+//   updatedAt: { type: Date },
+//   place: { type: String },
+//   isPublic: { type: Boolean }
 // });
+
+const TripSchema = new Schema({
+  createdAt     : { type: Date    },
+  updatedAt     : { type: Date    },
+  isPublic      : { type: Boolean },
+  place         : { type: String  },
+  notes         : { type: String  },
+  coverImageUrl : { type: String  },
+  hotels        : { type: Array   },
+  sites         : { type: Array   },
+  startDate     : { type: Date    },
+  endDate       : { type: Date    }
+});
 
 TripSchema.pre('save', function(next) {
   // SET createdAt AND updatedAt

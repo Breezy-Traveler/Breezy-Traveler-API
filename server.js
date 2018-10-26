@@ -49,12 +49,19 @@ app.get('/trips', (req, res) => {
 // CREATE a Trip
 app.post('/trips', (req, res) => {
 
-  TripModel.create( {isPublic: false, place: 'London'}, function(err, trip)  {
-    console.log('hello again!!!!!!!!');
+  console.log("yo" + req.body);
+
+  let trip = new TripModel({
+    isPublic: req.body.isPublic,
+    place: req.body.place,
+    hotels: req.body.hotels
+  });
+
+  trip.save( (err, trip) => {
     if (err) {
-      console.log(err)
+      res.send(err.message)
     } else {
-      console.log(trip)
+      res.json(trip)
     }
   })
 });
