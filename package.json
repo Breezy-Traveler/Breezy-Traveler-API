@@ -4,7 +4,8 @@
   "description": "API service for a client iOS app",
   "main": "server.js",
   "scripts": {
-    "test": "mocha"
+    "test": "node test.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -32,5 +33,12 @@
     "mongoose": "^5.3.6",
     "morgan": "^1.9.1",
     "passport": "^0.4.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0"
+  },
+  "engines": {
+    "node": "8.11.1",
+    "npm": "6.4.1"
   }
 }

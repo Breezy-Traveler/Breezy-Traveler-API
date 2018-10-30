@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+const TripModel = require('./models/trips');
+
 
 // MIDDLEWARE configuration ============================================================
 // set up our express application
@@ -19,10 +21,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // TEMPLATE configuration ===============================================================
-app.engine('hbs', exphbs({
-  defaultLayout: 'main',
-  extname: 'hbs'
-}));
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: 'hbs' }));
 app.set('view engine', 'hbs');
 
 
@@ -30,19 +29,26 @@ app.set('view engine', 'hbs');
 app.use(exp.static('./public'));
 
 
-// ROUTES =============================================================================
+// CONTROLLERS =============================================================================
 // load our routes and pass to our app
-require('./controllers/trips')(app); // load our routes and pass to our app
+require('./controllers/trips')(app);
 
 
 // Database configuration ==============================================================
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const dbConfig = require('./src/config/database');
 
-mongoose.connect(dbConfig.uri, {
-  useNewUrlParser: true
-}); // connect our database
+mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, function(error) {
+  if (error) {
+    console.log(error.message)
+  } else {
+    console.log('connected to mongoose')
+  }
+});
+
 mongoose.set('debug', true);
+
 
 
 // LAUNCH =============================================================================
