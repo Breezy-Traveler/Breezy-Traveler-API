@@ -15,7 +15,7 @@ module.exports = (app) => {
 // READ all trips
   app.get('/trips', (req, res) => {
     TripModel.find({}, (err, trips) => {
-      res.json({ trips: trips })
+      res.json(trips)
     });
   });
 
@@ -71,4 +71,3 @@ module.exports = (app) => {
       })
   });
 };
-
