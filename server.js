@@ -31,40 +31,9 @@ app.use(exp.static('./public'));
 
 // CONTROLLERS =============================================================================
 // load our routes and pass to our app
-// const tripsController = require('./controllers/trips');
-// app.use('', tripsController);
-app.disable('etag');
-
-app.get('/', (req, res) => {
-  res.send('awesome')
-});
-
-// READ all trips
-app.get('/trips', (req, res) => {
-  TripModel.find({}, (err, trips) => {
-    res.json({ trips: trips })
-  });
-});
-
-// CREATE a Trip
-app.post('/trips', (req, res) => {
-
-  console.log("yo" + req.body);
-
-  let trip = new TripModel({
-    isPublic: req.body.isPublic,
-    place: req.body.place,
-    hotels: req.body.hotels
-  });
-
-  trip.save( (err, trip) => {
-    if (err) {
-      res.send(err.message)
-    } else {
-      res.json(trip)
-    }
-  })
-});
+const tripsController = require('./controllers/trips');
+app.use('', tripsController);
+// app.disable('etag');
 
 
 // Database configuration ==============================================================

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Trip = require('../models/trips');
+const TripModel = require('../models/trips');
 
 const trip = {
   isPublic: false,
@@ -26,20 +26,34 @@ router.get('/', (req, res) => {
 });
 
 // READ all Trips
+
+// READ all trips
 router.get('/trips', (req, res) => {
-  Trip.find({}, (err, trips) => {
+  TripModel.find({}, (err, trips) => {
     res.json({ trips: trips })
   });
 });
 
 // CREATE a Trip
-router.post('/trips/new', (req, res) => {
+router.post('/trips', (req, res) => {
 
-  let trip = new Trip(req.body);
+  console.log("yo" + req.body);
 
-  trip.save((err, trip) => {
-    res.json({ trips: trip })
+  let trip = new TripModel({
+    isPublic: req.body.isPublic,
+    place: req.body.place,
+    hotels: req.body.hotels
+  });
+
+  trip.save( (err, trip) => {
+    if (err) {
+      res.send(err.message)
+    } else {
+      res.json(trip)
+    }
   })
 });
+
+
 
 module.exports = router;
