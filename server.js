@@ -1,7 +1,7 @@
 require('dotenv').config();
 const exp = require('express');
 const app = exp();
-const mongoose = require('mongoose');
+
 const exphbs = require('express-handlebars');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -31,20 +31,22 @@ app.use(exp.static('./public'));
 
 // CONTROLLERS =============================================================================
 // load our routes and pass to our app
-const tripsController = require('./controllers/trips');
-app.use('', tripsController);
-// app.disable('etag');
+require('./controllers/trips')(app);
 
 
 // Database configuration ==============================================================
-const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/breezy";
+const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect(
-  mongoUri, { useNewUrlParser: true }, function(error) {
-    if (error) {console.log(error.message)}
-    else {console.log('connected to mongoose')}
+const dbConfig = require('./src/config/database');
+
+mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, function(error) {
+  if (error) {
+    console.log(error.message)
+  } else {
+    console.log('connected to mongoose')
   }
-);
+});
+
 mongoose.set('debug', true);
 
 

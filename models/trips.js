@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// const TripSchema = new Schema({
-//   createdAt: { type: Date },
-//   updatedAt: { type: Date },
-//   place: { type: String },
-//   isPublic: { type: Boolean }
-// });
-
 const TripSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
