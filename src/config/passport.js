@@ -21,7 +21,7 @@ module.exports = function (passport) {
 
   // used to deserialize the user
   passport.deserializeUser(function (id, done) {
-    User.findById(id, function(err, user) {
+    UserModel.findById(id, function(err, user) {
       done(err, user);
     });
   });
@@ -45,7 +45,7 @@ module.exports = function (passport) {
       process.nextTick(function() {
         // Find a suer whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.email' : email }, function (err, user) {
+        UserModel.findOne({ 'local.email' : email }, function (err, user) {
           // if there are any errors, return the error
           if (err) { return done(err.message) }
 
@@ -91,7 +91,7 @@ module.exports = function (passport) {
 
       // find a user whose email is the same as the forms email
       // we are checking to see if the user trying to login already exists
-      User.findOne({ 'local.email' :  email }, function(err, user) {
+      UserModel.findOne({ 'local.email' :  email }, function(err, user) {
         // if there are any errors, return the error before anything else
         if (err)
           return done(err);
@@ -107,7 +107,5 @@ module.exports = function (passport) {
         // all is well, return successful user
         return done(null, user);
       });
-
     }));
-
 };
