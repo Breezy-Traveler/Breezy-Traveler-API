@@ -48,6 +48,7 @@ module.exports = (app) => {
   });
 
   // UPDATE
+  // FIXME: this does not return the updated trip, returns the old trip WHY????
   app.post('/trips/:id', (req, res) => {
     TripModel.findByIdAndUpdate(req.params.id, req.body)
       .then(trip => {
