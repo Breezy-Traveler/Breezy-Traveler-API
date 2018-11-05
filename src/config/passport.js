@@ -17,8 +17,8 @@ module.exports = function(passport) {
   });
 
   // used to deserialize the user
-  passport.deserializeUser(function (id, done) {
-    UserModel.findById(id, function(err, user) {
+  passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
       done(err, user);
     });
   });
@@ -32,26 +32,27 @@ module.exports = function(passport) {
   passport.use('local-signup', new LocalStrategy({
       // by default, local strategy uses username and password, we add email
       // usernameField : 'username',
-      emailField    : 'email',
+      usernameField    : 'email',
       passwordField : 'password',
       passReqToCallback : true // allows us to pass back the entire request to the callback
     },
 
     function(req, email, password, done) {
-      // User.findOne wont fire unless data is sent back
+      // asynchronous  -  User.findOne wont fire unless data is sent back
       process.nextTick(function() {
+
         // Find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.email' : email }, function (err, user) {
+        User.findOne({ 'local.email' : email }, function(err, user) {
           // if there are any errors, return the error
-          if (err) { return done(err.message) }
+          if (err)
+            return done(err.message);
 
           // check to see if there us already a user with that email
           if (user) {
-            return done(null, false, req.flash(
-              'signupMessage', 'That email is already taken.'
-            ));
+            return done(null, false, req.flash( 'signupMessage', 'That email is already taken.' ));
           } else {
+
             // create the user
             const newUser = new User();
 
@@ -62,10 +63,12 @@ module.exports = function(passport) {
 
             // save the user
             newUser.save(function(err) {
-              if (err) { throw err; }
+              if (err)
+                throw err;
               return done(null, newUser);
             });
           }
+
         });
       });
     }));
