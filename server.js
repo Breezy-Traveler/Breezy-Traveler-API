@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
 
-const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
@@ -24,11 +23,12 @@ mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, error => {
   else { console.log('connected to mongoose') }
 });
 mongoose.set('debug', true);
+mongoose.set('useCreateIndex', true);
 require('./src/config/passport')(passport); // pass passport for configuration
 
 
 // MIDDLEWARE configuration ==============================================================
-app.use(morgan('dev')); // log ever request to the console
+app.use(require('morgan')('dev')); // log ever request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({ extended: true })); // get information from html forms
 app.use(bodyParser.json());
@@ -44,7 +44,11 @@ app.set('view engine', 'hbs');
 app.use(exp.static('./public'));
 
 // required for passport
-app.use( session({ secret: process.env.SECRET })); // session secret
+app.use( session({
+  secret: process.env.SECRET, // session secret
+  saveUninitialized: true,
+  resave: true
+}));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session

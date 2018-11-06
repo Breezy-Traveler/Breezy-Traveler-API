@@ -35,44 +35,59 @@ module.exports = function(passport) {
       usernameField    : 'email',
       passwordField : 'password',
       passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-
-    function(req, email, password, done) {
+    }, (req, email, password, done) => {
       // asynchronous  -  User.findOne wont fire unless data is sent back
-      process.nextTick(function() {
+      // process.nextTick(function() {
 
         // Find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.email' : email }, function(err, user) {
+        User.findOne({ 'local.email' : email })
+          .then((user)=> {})
+          .catch()
           // if there are any errors, return the error
           if (err)
             return done(err.message);
 
-          // check to see if there us already a user with that email
+          // check to see if there is already a user with that email
           if (user) {
+            console.log('hello??????');
+            console.log(user);
             return done(null, false, req.flash( 'signupMessage', 'That email is already taken.' ));
+
           } else {
 
-            // create the user
-            const newUser = new User();
+            User.findOne({ 'local.username' : req.body.username }, function(err, user) {
+              if (user) {
+                console.log('hello??????');
+                console.log(user);
+                return done(null, false, req.flash( 'signupMessage', 'That username is already taken.' ));
+              } else {
+                // create the user
+                const newUser = new User();
 
-            // set the user's local credentials
-            // newUser.local.username = username;
-            newUser.local.email = email;
-            newUser.local.password = newUser.generateHash(password);
-            newUser.local.username = req.body.username;
+                // set the user's local credentials
+                // newUser.local.username = username;
+                // const jwt = newUser.generateJWT();
+                newUser.local.email = email;
+                newUser.local.password = newUser.generateHash(password);
+                newUser.local.username = req.body.username;
+                // newUser.local.token = jwt;
 
-            // save the user
-            newUser.save(function(err) {
-              if (err)
-                throw err;
-              return done(null, newUser);
+                // res.status(200);
+                // res.json( newUser );
+
+                // save the user
+                newUser.save(function(err) {
+                  if (err)
+                    throw err;
+                  return done(null, newUser);
+                });
+              }
             });
           }
-
-        });
-      });
-    }));
+        })
+      // })
+    // })
+    );
 
   // =========================================================================
   // LOCAL LOGIN =============================================================
