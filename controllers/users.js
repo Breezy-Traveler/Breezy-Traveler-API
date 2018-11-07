@@ -2,6 +2,12 @@
 
 module.exports = (app, passport) => {
 
+  // const router = require('express').Router();
+  const auth = require('../src/config/auth');
+  const Users = require('../models/users');
+  // const mongoose = require('mongoose');
+
+
   // =====================================
   // HOME PAGE (with login links) ========
   // =====================================
@@ -29,6 +35,7 @@ module.exports = (app, passport) => {
       failureFlash: true // allow flash messages
   }));
 
+
   // =====================================
   // SIGNUP ==============================
   // =====================================
@@ -39,12 +46,42 @@ module.exports = (app, passport) => {
     res.render('signup', { message: req.flash('signupMessage') });
   });
 
+  //POST new user route (optional, everyone has access)
+  app.post('/signup', auth.optional, (req, res, next) => {
+    console.log(req.body);
+    const user = req.body;
+
+    if(!user.email) {
+      return res.status(422).json({
+        errors: {
+          email: 'is required',
+        },
+      });
+    }
+
+    if(!user.password) {
+      return res.status(422).json({
+        errors: {
+          password: 'is required',
+        },
+      });
+    }
+
+    const finalUser = new Users(user);
+
+    return finalUser.save()
+      .then( (finalUser) => {
+        res.json({ user: finalUser.toAuthJSON()});
+        console.log(finalUser.toAuthJSON())
+      });
+  });
+
   // process the signup form
-  app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect : '/profile', // redirect to the secure profile section
-    failureRedirect : '/signup', // redirect back to the signup page if there is an error
-    failureFlash    : true // allow flash messages
-  }));
+  // router.post('/signup', passport.authenticate('local-signup', {
+  //   successRedirect : '/profile', // redirect to the secure profile section
+  //   failureRedirect : '/signup', // redirect back to the signup page if there is an error
+  //   failureFlash    : true // allow flash messages
+  // }));
 
 
   // =====================================

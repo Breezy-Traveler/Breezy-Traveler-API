@@ -1,7 +1,7 @@
 // config/passport.js
 
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../../models/users');
+const Users = require('../../models/users');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -18,7 +18,7 @@ module.exports = function(passport) {
 
   // used to deserialize the user
   passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+    Users.findById(id, function(err, user) {
       done(err, user);
     });
   });
@@ -30,64 +30,39 @@ module.exports = function(passport) {
   // by default, if there was no name, it would just be called 'local'
 
   passport.use('local-signup', new LocalStrategy({
-      // by default, local strategy uses username and password, we add email
-      // usernameField : 'username',
-      usernameField    : 'email',
-      passwordField : 'password',
-      passReqToCallback : true // allows us to pass back the entire request to the callback
-    }, (req, email, password, done) => {
-      // asynchronous  -  User.findOne wont fire unless data is sent back
-      // process.nextTick(function() {
-
-        // Find a user whose email is the same as the forms email
-        User.findOne({ 'local.email' : email })
-          .then((user)=> {})
-          .catch()
-          // if there are any errors, return the error
-          if (err)
-            return done(err.message);
-
-          // check to see if there is already a user with that email
-          if (user) {
-            console.log('hello??????');
-            console.log(user);
-            return done(null, false, req.flash( 'signupMessage', 'That email is already taken.' ));
-
-          } else {
-
-            User.findOne({ 'local.username' : req.body.username }, function(err, user) {
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback : true // allows us to pass back the entire request to the callback
+  }, (req, email, password, done) => {
+    Users.findOne({ 'local.email' : email })
+      .then((user) => {
+        if(user) {
+          return done(null, user, req.flash( 'signupMessage', 'That email is already taken.' ));
+        } else {
+          Users.findOne({ 'local.username' : req.body.username })
+            .then((user) => {
               if (user) {
-                console.log('hello??????');
-                console.log(user);
                 return done(null, false, req.flash( 'signupMessage', 'That username is already taken.' ));
               } else {
                 // create the user
-                const newUser = new User();
-
+                const newUser = new Users();
                 // set the user's local credentials
-                // newUser.local.username = username;
-                // const jwt = newUser.generateJWT();
                 newUser.local.email = email;
                 newUser.local.password = newUser.generateHash(password);
                 newUser.local.username = req.body.username;
-                // newUser.local.token = jwt;
-
-                // res.status(200);
-                // res.json( newUser );
 
                 // save the user
-                newUser.save(function(err) {
-                  if (err)
-                    throw err;
-                  return done(null, newUser);
-                });
+                // newUser.save(function(err) {
+                //   if (err)
+                //     throw err;
+                //   return done(null, newUser);
+                // });
+                return done(null, newUser);
               }
-            });
-          }
-        })
-      // })
-    // })
-    );
+            })
+        }
+      }).catch(done);
+  }));
 
   // =========================================================================
   // LOCAL LOGIN =============================================================
@@ -107,7 +82,7 @@ module.exports = function(passport) {
 
       // find a user whose email is the same as the forms email
       // we are checking to see if the user trying to login already exists
-      User.findOne({ 'local.username' :  username }, function(err, user) {
+      Users.findOne({ 'local.username' :  username }, function(err, user) {
         // if there are any errors, return the error before anything else
         if (err)
           return done(err);
