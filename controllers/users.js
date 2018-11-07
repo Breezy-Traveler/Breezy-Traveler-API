@@ -47,33 +47,40 @@ module.exports = (app, passport) => {
   });
 
   //POST new user route (optional, everyone has access)
-  app.post('/signup', auth.optional, (req, res, next) => {
-    console.log(req.body);
-    const user = req.body;
+  app.post('/signup', auth.optional, passport.authenticate('local-signup', {failureFlash: true}), (req, res, next) => {
 
-    if(!user.email) {
-      return res.status(422).json({
-        errors: {
-          email: 'is required',
-        },
-      });
-    }
-
-    if(!user.password) {
-      return res.status(422).json({
-        errors: {
-          password: 'is required',
-        },
-      });
-    }
-
-    const finalUser = new Users(user);
-
-    return finalUser.save()
-      .then( (finalUser) => {
-        res.json({ user: finalUser.toAuthJSON()});
-        console.log(finalUser.toAuthJSON())
-      });
+    const user = req.user;
+    console.log(`WE ARE AMAZING!!!!`);
+    res.json(user)
+    // if(!user.local.email) {
+    //   return res.status(422).json({
+    //     errors: {
+    //       email: 'is required',
+    //     },
+    //   });
+    // }
+    //
+    // if(!user.password) {
+    //   return res.status(422).json({
+    //     errors: {
+    //       password: 'is required',
+    //     },
+    //   });
+    // }
+    //
+    // const newUser = new Users();
+    // // set the user's local credentials
+    // newUser.local.email = req.body.email;
+    // newUser.local.password = newUser.generateHash(req.body.password);
+    // newUser.local.username = req.body.username;
+    // newUser.local.token = newUser.toAuthJSON()
+    // // save the user
+    //
+    // return newUser.save()
+    //   .then( (savedUser) => {
+    //     res.json({ savedUser });
+    //     console.log( savedUser )
+    //   });
   });
 
   // process the signup form

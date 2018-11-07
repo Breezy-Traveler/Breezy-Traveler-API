@@ -44,21 +44,24 @@ module.exports = function(passport) {
               if (user) {
                 return done(null, false, req.flash( 'signupMessage', 'That username is already taken.' ));
               } else {
-                // create the user
+
                 const newUser = new Users();
                 // set the user's local credentials
-                newUser.local.email = email;
-                newUser.local.password = newUser.generateHash(password);
+                newUser.local.email = req.body.email;
+                newUser.local.password = newUser.generateHash(req.body.password);
                 newUser.local.username = req.body.username;
-
+                newUser.local.token = newUser.toAuthJSON()
                 // save the user
-                // newUser.save(function(err) {
-                //   if (err)
-                //     throw err;
-                //   return done(null, newUser);
-                // });
-                return done(null, newUser);
+
+                return newUser.save()
+                  .then( (savedUser) => {
+
+                    console.log( savedUser )
+                    return done(null, savedUser)
+                  });
+
               }
+
             })
         }
       }).catch(done);
