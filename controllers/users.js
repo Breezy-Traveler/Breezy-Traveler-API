@@ -47,11 +47,15 @@ module.exports = (app, passport) => {
   });
 
   //POST new user route (optional, everyone has access)
-  app.post('/signup', auth.optional, passport.authenticate('local-signup', {failureFlash: true}), (req, res, next) => {
+  app.post('/signup', passport.authenticate('local-signup', { failureFlash: true }), (req, res, next) => {
 
     const user = req.user;
-    console.log(`WE ARE AMAZING!!!!`);
-    res.json(user)
+
+    if (user) {
+      res.json({THEUSER: user})
+    } else {
+      res.send("Nawwww")
+    }
     // if(!user.local.email) {
     //   return res.status(422).json({
     //     errors: {

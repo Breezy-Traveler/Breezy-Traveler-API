@@ -34,37 +34,55 @@ module.exports = function(passport) {
     passwordField: 'password',
     passReqToCallback : true // allows us to pass back the entire request to the callback
   }, (req, email, password, done) => {
-    Users.findOne({ 'local.email' : email })
-      .then((user) => {
-        if(user) {
-          return done(null, user, req.flash( 'signupMessage', 'That email is already taken.' ));
-        } else {
-          Users.findOne({ 'local.username' : req.body.username })
-            .then((user) => {
-              if (user) {
-                return done(null, false, req.flash( 'signupMessage', 'That username is already taken.' ));
-              } else {
 
-                const newUser = new Users();
-                // set the user's local credentials
-                newUser.local.email = req.body.email;
-                newUser.local.password = newUser.generateHash(req.body.password);
-                newUser.local.username = req.body.username;
-                newUser.local.token = newUser.toAuthJSON()
-                // save the user
+      const newUser = new Users();
+      // set the user's local credentials
+      newUser.local.email = req.body.email;
+      newUser.local.password = newUser.generateHash(req.body.password);
+      newUser.local.username = req.body.username;
+      newUser.local.token = newUser.toAuthJSON()
+      // save the user
 
-                return newUser.save()
-                  .then( (savedUser) => {
+      newUser.save()
+        .then( (savedUser) => {
 
-                    console.log( savedUser )
-                    return done(null, savedUser)
-                  });
+          console.log( savedUser )
+          done(null, savedUser)
+        })
+        .catch( (error) => {
+          // console.log( `ERROR ${error}` )
+          done(null, null, null)
+        });
 
-              }
-
-            })
-        }
-      }).catch(done);
+    // Users.findOne({ 'local.email' : email })
+    //   .then((user) => {
+    //     if(user) {
+    //       done(null, null, req.flash( 'signupMessage', 'That email is already taken.' ));
+    //     } else {
+    //       Users.findOne({ 'local.username' : req.body.username })
+    //         .then((user) => {
+    //           if (user) {
+    //             done(null, null, req.flash( 'signupMessage', 'That username is already taken.' ));
+    //           } else {
+    //
+    //             const newUser = new Users();
+    //             // set the user's local credentials
+    //             newUser.local.email = req.body.email;
+    //             newUser.local.password = newUser.generateHash(req.body.password);
+    //             newUser.local.username = req.body.username;
+    //             newUser.local.token = newUser.toAuthJSON()
+    //             // save the user
+    //
+    //             newUser.save()
+    //               .then( (savedUser) => {
+    //
+    //                 console.log( savedUser )
+    //                 done(null, savedUser)
+    //               });
+    //           }
+    //         })
+    //     }
+    //   }).catch(done);
   }));
 
   // =========================================================================
