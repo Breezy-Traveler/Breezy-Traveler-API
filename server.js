@@ -28,7 +28,7 @@ require('./src/config/passport')(passport); // pass passport for configuration
 
 
 // MIDDLEWARE configuration ==============================================================
-app.use(require('morgan')('dev')); // log ever request to the console
+app.use(require('morgan')('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({ extended: true })); // get information from html forms
 app.use(bodyParser.json());

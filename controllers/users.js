@@ -46,46 +46,71 @@ module.exports = (app, passport) => {
     res.render('signup', { message: req.flash('signupMessage') });
   });
 
-  //POST new user route (optional, everyone has access)
-  app.post('/signup', passport.authenticate('local-signup', { failureFlash: true }), (req, res, next) => {
-
-    const user = req.user;
-
-    if (user) {
-      res.json({THEUSER: user})
-    } else {
-      res.send("Nawwww")
-    }
-    // if(!user.local.email) {
-    //   return res.status(422).json({
-    //     errors: {
-    //       email: 'is required',
-    //     },
-    //   });
-    // }
-    //
-    // if(!user.password) {
-    //   return res.status(422).json({
-    //     errors: {
-    //       password: 'is required',
-    //     },
-    //   });
-    // }
-    //
-    // const newUser = new Users();
-    // // set the user's local credentials
-    // newUser.local.email = req.body.email;
-    // newUser.local.password = newUser.generateHash(req.body.password);
-    // newUser.local.username = req.body.username;
-    // newUser.local.token = newUser.toAuthJSON()
-    // // save the user
-    //
-    // return newUser.save()
-    //   .then( (savedUser) => {
-    //     res.json({ savedUser });
-    //     console.log( savedUser )
-    //   });
+  app.get('/signup-fail', function(req, res) {
+    res.send('nawwwww')
   });
+
+  //POST new user route (optional, everyone has access)
+  // app.post('/signup', passport.authenticate('local-signup',
+  //   {
+	//     failureRedirect : '/signup-fail', // redirect back to the signup page if there is an error
+	//     failureFlash    : true // allow flash messages
+	//   }), (req, res, next) => {
+  //
+  //   const user = res.user;
+  //
+  //   if (!user) {
+	//     console.log('in this code block yo')
+	//     res.send("Nawwww")
+  //   }  else if (user) {
+  //
+  //     res.json({THEUSER: user})
+  //   } else {
+	//     next();
+  //     console.log('in this code block yo')
+  //     res.send("Nawwww")
+  //   }
+  // });
+
+  app.post('/signup', function (req, res, next) {
+    passport.authenticate('local-signup', function (err, user, info) {
+
+
+
+      if (err) {
+	      // console.log(`******************* Info: ${info}`);
+        let foundErr = (err.message).split(' ');
+        // let emailErr = foundErr.search(`local.email`);
+        // let usernameErr = foundErr.search(`local.username`);
+	      let emailError = false;
+	      let usernameError = false;
+
+        for (let i = 0; i < foundErr.length; i++) {
+          // console.log(foundErr[i]);
+
+          if (foundErr[i] === '`local.email`') {
+            emailError = true
+          } else if (foundErr[i] === '`local.username`') {
+	          usernameError = true
+          }
+        }
+
+        if (emailError && usernameError) {
+          return res.status(401).json({'Error': 'Email and Username taken'})
+        } else if (emailError) {
+          return res.status(401).json({'Error': 'Email already taken'})
+        } else {
+          return res.status(401).json({'Error': 'Username already taken'})
+        }
+
+	      // return res.json({'ValidationFail': err.message})
+      }
+      // if (!user) { return res.redirect('/signup-fail'); }
+
+	    res.json(user)
+    })(req, res, next);
+  });
+
 
   // process the signup form
   // router.post('/signup', passport.authenticate('local-signup', {

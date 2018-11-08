@@ -36,53 +36,24 @@ module.exports = function(passport) {
   }, (req, email, password, done) => {
 
       const newUser = new Users();
+
       // set the user's local credentials
       newUser.local.email = req.body.email;
       newUser.local.password = newUser.generateHash(req.body.password);
       newUser.local.username = req.body.username;
-      newUser.local.token = newUser.toAuthJSON()
+      newUser.local.token = newUser.toAuthJSON();
       // save the user
 
       newUser.save()
         .then( (savedUser) => {
-
-          console.log( savedUser )
           done(null, savedUser)
         })
         .catch( (error) => {
-          // console.log( `ERROR ${error}` )
-          done(null, null, null)
-        });
+	        // console.log( `ERROR ${error}` )
+	        return done(error, false, req.flash('signupMessage', 'Username or email taken.'));
 
-    // Users.findOne({ 'local.email' : email })
-    //   .then((user) => {
-    //     if(user) {
-    //       done(null, null, req.flash( 'signupMessage', 'That email is already taken.' ));
-    //     } else {
-    //       Users.findOne({ 'local.username' : req.body.username })
-    //         .then((user) => {
-    //           if (user) {
-    //             done(null, null, req.flash( 'signupMessage', 'That username is already taken.' ));
-    //           } else {
-    //
-    //             const newUser = new Users();
-    //             // set the user's local credentials
-    //             newUser.local.email = req.body.email;
-    //             newUser.local.password = newUser.generateHash(req.body.password);
-    //             newUser.local.username = req.body.username;
-    //             newUser.local.token = newUser.toAuthJSON()
-    //             // save the user
-    //
-    //             newUser.save()
-    //               .then( (savedUser) => {
-    //
-    //                 console.log( savedUser )
-    //                 done(null, savedUser)
-    //               });
-    //           }
-    //         })
-    //     }
-    //   }).catch(done);
+        });
+    // done(null);
   }));
 
   // =========================================================================
