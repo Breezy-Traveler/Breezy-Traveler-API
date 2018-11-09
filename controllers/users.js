@@ -2,10 +2,7 @@
 
 module.exports = (app, passport) => {
 
-  // const router = require('express').Router();
   const auth = require('../src/config/auth');
-  const Users = require('../models/users');
-  // const mongoose = require('mongoose');
 
 
   // =====================================
@@ -33,19 +30,16 @@ module.exports = (app, passport) => {
   //     failureRedirect: '/login', // redirect back to the login page if there is an error
   //     failureFlash: true // allow flash messages
   // }));
-  app.post('/login', function(req, res, next) {
-    passport.authenticate('local-login', function(err, user) {
-      if (err) { return next(err); }
-      if (!user) { return res.redirect('/login'); }
-
-      req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        return res.redirect('/users/' + user.username);
-      });
-
-      res.status(200).json(user)
-    })(req, res, next);
-  });
+	app.post('/login', function(req, res, next) {
+		passport.authenticate('local-login', function(err, user, info) {
+			if (err) { return next(err); }
+			if (!user) { return res.send('no user'); }
+			req.logIn(user, function(err) {
+				if (err) { return next(err); }
+				return res.send('all good');
+			});
+		})(req, res, next);
+	});
 
 
   // =====================================
