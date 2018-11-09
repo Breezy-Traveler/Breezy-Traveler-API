@@ -22,16 +22,16 @@ module.exports = (app, passport) => {
     // render the page and pass in any flash data if it exists
     res.render('login', { message: req.flash('loginMessage') });
   });
-  
+
 	app.post('/login', function(req, res, next) {
 		passport.authenticate('local-login', function(err, user) {
 
 			if (err) { return next(err); }
-			if (!user) { return res.send('no user'); }
+			if (!user) { return res.status(401).json({'Error': 'Unauthorized'}); }
 
 			req.logIn(user, function(err) {
 				if (err) { return next(err); }
-				return res.json(user);
+				return res.status(200).json(user);
 			});
 		})(req, res, next);
 	});
@@ -69,7 +69,7 @@ module.exports = (app, passport) => {
         }
       }
 
-	    res.json(user)
+	    res.status(201).json(user)
     })(req, res, next);
   });
 
