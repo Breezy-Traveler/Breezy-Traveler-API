@@ -55,7 +55,7 @@ module.exports = function(passport) {
       passwordField : 'password',
       passReqToCallback : true // allows us to pass back the entire request to the callback
     }, (req, username, password, done) => {
-
+      console.log('************************* HERE!!!!');
       // find a user whose email is the same as the forms email
       // we are checking to see if the user trying to login already exists
       Users.findOne({ 'local.username' :  username }, function(err, user) {
@@ -77,4 +77,13 @@ module.exports = function(passport) {
         return done(null, user);
       });
     }));
+
+  // passport.use('local-login', new LocalStrategy({
+  //     usernameField    : 'username',
+  //     passwordField : 'password',
+  //     passReqToCallback : true
+  //   }, (req, username, password, done) => {
+  //     console.log('yo!');
+  //     return done(null, null)
+  //   }));
 };

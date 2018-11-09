@@ -2,10 +2,7 @@
 
 module.exports = (app, passport) => {
 
-  // const router = require('express').Router();
   const auth = require('../src/config/auth');
-  const Users = require('../models/users');
-  // const mongoose = require('mongoose');
 
 
   // =====================================
@@ -25,7 +22,7 @@ module.exports = (app, passport) => {
     // render the page and pass in any flash data if it exists
     res.render('login', { message: req.flash('loginMessage') });
   });
-
+  
 	app.post('/login', function(req, res, next) {
 		passport.authenticate('local-login', function(err, user) {
 
@@ -36,7 +33,6 @@ module.exports = (app, passport) => {
 				if (err) { return next(err); }
 				return res.json(user);
 			});
-
 		})(req, res, next);
 	});
 
