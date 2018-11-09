@@ -26,26 +26,19 @@ module.exports = (app, passport) => {
     res.render('login', { message: req.flash('loginMessage') });
   });
 
-  // process the login form
-  // app.post('/login', passport.authenticate('local-login', {
-  //
-  //     successRedirect: '/profile', // redirect to the secure profile section
-  //     failureRedirect: '/login', // redirect back to the login page if there is an error
-  //     failureFlash: true // allow flash messages
-  // }));
-  app.post('/login', function(req, res, next) {
-    passport.authenticate('local-login', function(err, user) {
-      if (err) { return next(err); }
-      if (!user) { return res.redirect('/login'); }
+	app.post('/login', function(req, res, next) {
+		passport.authenticate('local-login', function(err, user) {
 
-      req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        return res.redirect('/users/' + user.username);
-      });
+			if (err) { return next(err); }
+			if (!user) { return res.send('no user'); }
 
-      res.status(200).json(user)
-    })(req, res, next);
-  });
+			req.logIn(user, function(err) {
+				if (err) { return next(err); }
+				return res.json(user);
+			});
+
+		})(req, res, next);
+	});
 
 
   // =====================================
