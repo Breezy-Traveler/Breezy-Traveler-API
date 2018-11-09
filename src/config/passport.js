@@ -1,16 +1,10 @@
 // config/passport.js
-
 const LocalStrategy = require('passport-local').Strategy;
 const Users = require('../../models/users');
 
-// expose this function to our app using module.exports
 module.exports = function(passport) {
-  // =========================================================================
-  // passport session setup ==================================================
-  // =========================================================================
   // required for persistent login sessions
   // passport needs ability to serialize and deserialize users out of session
-
   // used to serialize the user for the session
   passport.serializeUser(function(user, done) {
     done(null, user.id);
@@ -34,7 +28,6 @@ module.exports = function(passport) {
     passwordField: 'password',
     passReqToCallback : true // allows us to pass back the entire request to the callback
   }, (req, email, password, done) => {
-
       const newUser = new Users();
 
       // set the user's local credentials
@@ -42,35 +35,26 @@ module.exports = function(passport) {
       newUser.local.password = newUser.generateHash(req.body.password);
       newUser.local.username = req.body.username;
       newUser.local.token = newUser.toAuthJSON();
-      // save the user
 
       newUser.save()
         .then( (savedUser) => {
           done(null, savedUser)
         })
         .catch( (error) => {
-	        // console.log( `ERROR ${error}` )
-	        return done(error, false, req.flash('signupMessage', 'Username or email taken.'));
-
+	        return done(error, false);
         });
-    // done(null);
   }));
 
   // =========================================================================
   // LOCAL LOGIN =============================================================
   // =========================================================================
-  // we are using named strategies since we have one for login and one for signup
-  // by default, if there was no name, it would just be called 'local'
 
   passport.use('local-login', new LocalStrategy({
       // by default, local strategy uses username and password, we will add email
-      // usernameField : 'username',
       usernameField    : 'username',
       passwordField : 'password',
       passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-
-    function(req, username, password, done) { // callback with user credentials from our form
+    }, (req, username, password, done) => {
 
       // find a user whose email is the same as the forms email
       // we are checking to see if the user trying to login already exists
