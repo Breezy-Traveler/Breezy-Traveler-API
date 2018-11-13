@@ -91,16 +91,9 @@ module.exports = (app) => {
 		  let trip = new Trips({
 			  isPublic: req.body.isPublic,
 			  place: req.body.place,
-			  hotels: req.body.hotels
+			  hotels: req.body.hotels,
+        userId: user._id
 		  });
-
-		  // trip.save( (err, trip) => {
-			//   if (err) {
-			// 	  res.send(err.message)
-			//   } else {
-			// 	  res.json(trip)
-			//   }
-		  // })
 
       trip.save()
         .then( (trip) => {
