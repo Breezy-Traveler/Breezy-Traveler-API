@@ -49,9 +49,9 @@ module.exports = (app, passport) => {
 
   app.post('/signup', function (req, res, next) {
 
-  	const username = req.body.username
-	  const email = req.body.email
-	  const password = req.body.password
+  	const username = req.body.username;
+	  const email = req.body.email;
+	  const password = req.body.password;
 
   	if (!username && !email && ! password) {
   		return res.status(400).json({'Error': 'Must provide all user credentials'})
