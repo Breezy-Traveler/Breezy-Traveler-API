@@ -54,13 +54,13 @@ module.exports = (app, passport) => {
 	  const password = req.body.password
 
   	if (!username && !email && ! password) {
-  		res.json({'Error': 'Must provide all user credentials'})
+  		return res.status(400).json({'Error': 'Must provide all user credentials'})
 	  } else if (!username) {
-  		res.json({'Error': 'Must provide username'})
+		  return res.status(400).json({'Error': 'Must provide username'})
 	  } else if (!email) {
-		  res.json({'Error': 'Must provide valid email'})
+		  return res.status(400).json({'Error': 'Must provide valid email'})
 	  } else if (!password) {
-		  res.json({'Error': 'Must provide valid password'})
+		  return res.status(400).json({'Error': 'Must provide valid password'})
 	  }
 
     passport.authenticate('local-signup', function (err, user) {
