@@ -48,6 +48,21 @@ module.exports = (app, passport) => {
   });
 
   app.post('/signup', function (req, res, next) {
+
+  	const username = req.body.username
+	  const email = req.body.email
+	  const password = req.body.password
+
+  	if (!username && !email && ! password) {
+  		res.json({'Error': 'Must provide all user credentials'})
+	  } else if (!username) {
+  		res.json({'Error': 'Must provide username'})
+	  } else if (!email) {
+		  res.json({'Error': 'Must provide valid email'})
+	  } else if (!password) {
+		  res.json({'Error': 'Must provide valid password'})
+	  }
+
     passport.authenticate('local-signup', function (err, user) {
 
       if (err) {
