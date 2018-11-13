@@ -109,7 +109,7 @@ module.exports = (app) => {
 
         .catch( (err)=>{
 	        if (err) {
-		        res.status().json({'Error': err.message})
+		        res.status(401).json({'Error': err.message})
 	        }
         })
 	  });
