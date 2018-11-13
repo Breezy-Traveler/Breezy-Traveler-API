@@ -1,3 +1,5 @@
+// models/trips.js
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -11,7 +13,8 @@ const TripSchema = new Schema({
   hotels        : { type: Array   },
   sites         : { type: Array   },
   startDate     : { type: Date    },
-  endDate       : { type: Date    }
+  endDate       : { type: Date    },
+  userId        : { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
 TripSchema.pre('save', function(next) {
@@ -24,8 +27,6 @@ TripSchema.pre('save', function(next) {
   }
   next()
 });
-
-
 
 module.exports = mongoose.model('Trip', TripSchema);
 
