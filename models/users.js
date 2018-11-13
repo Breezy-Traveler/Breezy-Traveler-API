@@ -19,18 +19,6 @@ const UserSchema = mongoose.Schema({
     token        : String,
     name         : String,
     email        : String
-  },
-  twitter          : {
-    id           : String,
-    token        : String,
-    displayName  : String,
-    username     : String
-  },
-  google           : {
-    id           : String,
-    token        : String,
-    email        : String,
-    name         : String
   }
 });
 
