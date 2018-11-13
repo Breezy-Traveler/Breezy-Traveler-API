@@ -4,7 +4,10 @@ const getTokenFromHeaders = (req) => {
   const { headers: { authorization } } = req;
 
   if(authorization && authorization.split(' ')[0] === 'Token') {
-    return authorization.split(' ')[1];
+    const tokenValue = authorization.split(' ')[1];
+    req.token = tokenValue;
+
+    return tokenValue;
   }
   return null;
 };
