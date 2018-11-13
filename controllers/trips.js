@@ -94,14 +94,24 @@ module.exports = (app) => {
 			  hotels: req.body.hotels
 		  });
 
-		  trip.save( (err, trip) => {
-			  if (err) {
-				  res.send(err.message)
-			  } else {
-				  res.json(trip)
-			  }
-		  })
-      
+		  // trip.save( (err, trip) => {
+			//   if (err) {
+			// 	  res.send(err.message)
+			//   } else {
+			// 	  res.json(trip)
+			//   }
+		  // })
+
+      trip.save()
+        .then( (trip) => {
+          res.status(200).json(trip)
+        })
+
+        .catch( (err)=>{
+	        if (err) {
+		        res.status().json({'Error': err.message})
+	        }
+        })
 	  });
   });
 
