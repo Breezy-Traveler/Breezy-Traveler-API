@@ -88,7 +88,7 @@ module.exports = (app) => {
 			  return res.status(500).json({'Error': 'No user found'})
 		  }
 
-		  let trip = new TripModel({
+		  let trip = new Trips({
 			  isPublic: req.body.isPublic,
 			  place: req.body.place,
 			  hotels: req.body.hotels
@@ -107,7 +107,7 @@ module.exports = (app) => {
           res.status(200).json(trip)
         })
 
-        .catch( (err)=>{
+        .catch( (err) => {
 	        if (err) {
 		        res.status(401).json({'Error': err.message})
 	        }
