@@ -17,8 +17,21 @@ module.exports = (app) => {
     res.status(401).json({'Error': 'You must be logged in first'})
   });
 
+  const isAuthorized = () => {
+	  Users.currentUser(req.token, (err, user) => {
+		  if (err) {
+			  // unauthorized
+			  return res.status(400).json({'Error': 'User is unauthorized'})
+		  }
+		  if (!user) {
+			  //no error but, no user found
+			  return res.status(500).json({'Error': 'No user found'})
+		  }
+	  })
+  }
+
 // READ all trips
-  app.get('/trips', authorized.required, (req, res, next) => {
+  app.get('/trips', authorized.required, (req, res) => {
 
     Users.currentUser(req.token, (err, user) => {
       if (err) {
@@ -29,42 +42,67 @@ module.exports = (app) => {
 	      //no error but, no user found
 	      return res.status(500).json({'Error': 'No user found'})
       }
-	    Trips.find({ userId: user._id })
-        .then( (trips) => {
-          res.json(trips)
-        })
-        .catch((err) => {
-          res.status(401).json({ 'Error': err.message })
-        })
+
+    Trips.find({ userId: user._id })
+      .then( (trips) => {
+        res.json(trips)
+      })
+      .catch((err) => {
+        res.status(401).json({ 'Error': err.message })
+      })
     })
   });
 
   // SHOW one trip
-  app.get('/trips/:id', (req, res) => {
-	  Trips.findById(req.params.id)
-      .then(trip => {
-        res.json(trip)
-      }).catch((err) => {
-      console.log(`Error: ${err.message}`);
-    })
+  app.get('/trips/:id', authorized.required, (req, res) => {
+
+	  Users.currentUser(req.token, (err, user) => {
+		  if (err) {
+			  // unauthorized
+			  return res.status(400).json({'Error': 'User is unauthorized'})
+		  }
+		  if (!user) {
+			  //no error but, no user found
+			  return res.status(500).json({'Error': 'No user found'})
+		  }
+
+      Trips.findById(req.params.id)
+        .then(trip => {
+          res.json(trip)
+        }).catch((err) => {
+          res.status().json({ 'Error': `${err.message}` });
+      })
+	  })
   });
 
 // CREATE a Trip
-  app.post('/trips', (req, res) => {
+  app.post('/trips', authorized.required, (req, res) => {
 
-    let trip = new TripModel({
-      isPublic: req.body.isPublic,
-      place: req.body.place,
-      hotels: req.body.hotels
-    });
+	  Users.currentUser(req.token, (err, user) => {
+		  if (err) {
+			  // unauthorized
+			  return res.status(400).json({'Error': 'User is unauthorized'})
+		  }
+		  if (!user) {
+			  //no error but, no user found
+			  return res.status(500).json({'Error': 'No user found'})
+		  }
 
-    trip.save( (err, trip) => {
-      if (err) {
-        res.send(err.message)
-      } else {
-        res.json(trip)
-      }
-    })
+		  let trip = new TripModel({
+			  isPublic: req.body.isPublic,
+			  place: req.body.place,
+			  hotels: req.body.hotels
+		  });
+
+		  trip.save( (err, trip) => {
+			  if (err) {
+				  res.send(err.message)
+			  } else {
+				  res.json(trip)
+			  }
+		  })
+      
+	  });
   });
 
   // UPDATE
