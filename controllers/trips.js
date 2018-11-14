@@ -5,12 +5,13 @@ module.exports = (app) => {
   const Trips = require('../models/trips');
   const Users = require('../models/users');
   const authorized = require('../src/config/auth');
-
+  const http = require('https');
+  const gettyApi = require("gettyimages-api");
 
   // ********** ROUTES *********** //
-  app.get('/', (req, res) => {
-    res.status(401).json({'Error': 'You must be logged in first'})
-  });
+  // app.get('/', (req, res) => {
+  //   res.status(401).json({'Error': 'You must be logged in first'})
+  // });
 
   // TODO: Check if the user is authenticated refactor for code reuse
   // const isAuthorized = () => {
@@ -155,5 +156,23 @@ module.exports = (app) => {
           res.status(400).json({'Error': 'Bad request'})
         })
     })
-  })
+  });
+
+  /*********************** Getty Images *********************/
+
+  const apiKey = process.env.GETTY_KEY
+  const appSecret = process.env.GETTY_SECRET
+  app.get('/', (req, res) => {
+
+    const creds = { apiKey: apiKey, apiSecret: appSecret, username: "your_username", password: "your_password" };
+    const client = new api (creds);
+
+    client.searchimages().withPage(1).withPageSize(1).withPhrase('cats')
+      .execute().then(response => {
+      console.log(JSON.stringify(response.images[0]));
+    }, err => {
+      throw err;
+    });
+  });
+
 };
