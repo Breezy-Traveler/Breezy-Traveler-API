@@ -107,7 +107,7 @@ module.exports = (app) => {
   });
 
   // UPDATE a Trip
-  app.put('/trips/:id', (req, res) => {
+  app.put('/trips/:id', authorized.required, (req, res) => {
 	  Users.currentUser(req.token, (err, user) => {
 		  if (err) {
 			  // unauthorized
@@ -129,7 +129,7 @@ module.exports = (app) => {
   });
 
   // DELETE Trip
-  app.delete('/trips/:id', (req, res) => {
+  app.delete('/trips/:id', authorized.required, (req, res) => {
 	  Users.currentUser(req.token, (err, user) => {
 		  if (err) {
 			  // unauthorized
