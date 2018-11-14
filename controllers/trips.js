@@ -89,12 +89,14 @@ module.exports = (app) => {
 			  isPublic: req.body.isPublic,
 			  place: req.body.place,
 			  hotels: req.body.hotels,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
         userId: user._id
 		  });
 
       trip.save()
       .then( trip => {
-        res.status(200).json(trip)
+        res.status(201).json(trip)
       })
       .catch( err => {
         if (err) {
