@@ -121,7 +121,7 @@ module.exports = (app) => {
 			  return res.status(500).json({'Error': 'No user found'})
 		  }
 
-		  Trips.findByIdAndUpdate(req.params.id, req.body)
+		  Trips.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then( updatedTrip => {
         res.status(200).json(updatedTrip);
       })
