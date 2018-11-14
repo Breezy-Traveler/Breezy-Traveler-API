@@ -91,7 +91,7 @@ module.exports = (app) => {
         notes: req.body.notes,
         coverImageUrl: req.body.coverImageUrl,
 			  hotels: req.body.hotels,
-        sites: req.body.sitesl
+        sites: req.body.sites,
         startDate: req.body.startDate,
         endDate: req.body.endDate,
         userId: user._id
