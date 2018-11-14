@@ -141,8 +141,13 @@ module.exports = (app) => {
 		  }
 
 		  Trips.findByIdAndRemove(req.params.id)
+
       .then( trip => {
-        res.status(200).json(trip);
+        if (trip) {
+	        res.status(200).json(trip);
+        } else {
+	        res.status(404).json({ 'Error': 'No trip found'})
+        }
       })
       .catch( err => {
         res.status(400).json({ 'Error': err.message })
