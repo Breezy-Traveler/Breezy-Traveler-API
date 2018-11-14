@@ -165,7 +165,7 @@ module.exports = (app) => {
   app.get('/', (req, res) => {
 
     const creds = { apiKey: apiKey, apiSecret: appSecret, username: "your_username", password: "your_password" };
-    const client = new api (creds);
+    const client = new gettyApi(creds);
 
     client.searchimages().withPage(1).withPageSize(1).withPhrase('cats')
       .execute().then(response => {
