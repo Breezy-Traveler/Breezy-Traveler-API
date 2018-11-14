@@ -10,13 +10,12 @@ module.exports = (app) => {
     place: 'London'
   };
 
-	// if the user is authenticated
-
 // ********** ROUTES *********** //
   app.get('/', (req, res) => {
     res.status(401).json({'Error': 'You must be logged in first'})
   });
 
+	// Check if the user is authenticated
   const isAuthorized = () => {
 	  Users.currentUser(req.token, (err, user) => {
 		  if (err) {
@@ -28,7 +27,7 @@ module.exports = (app) => {
 			  return res.status(500).json({'Error': 'No user found'})
 		  }
 	  })
-  }
+  };
 
 // READ all trips
   app.get('/trips', authorized.required, (req, res) => {
@@ -43,11 +42,11 @@ module.exports = (app) => {
 	      return res.status(500).json({'Error': 'No user found'})
       }
 
-    Trips.find({ userId: user._id })
-      .then( (trips) => {
-        res.json(trips)
+      Trips.find({ userId: user._id })
+      .then( trips => {
+        res.status(200).json(trips)
       })
-      .catch((err) => {
+      .catch( err => {
         res.status(401).json({ 'Error': err.message })
       })
     })
@@ -67,10 +66,11 @@ module.exports = (app) => {
 		  }
 
       Trips.findById(req.params.id)
-        .then(trip => {
-          res.json(trip)
-        }).catch((err) => {
-          res.status().json({ 'Error': `${err.message}` });
+      .then( trip => {
+        res.status(200).json(trip)
+      })
+      .catch( err => {
+        res.status(401).json({ 'Error': `${err.message}` })
       })
 	  })
   });
@@ -96,41 +96,58 @@ module.exports = (app) => {
 		  });
 
       trip.save()
-        .then( (trip) => {
-          res.status(200).json(trip)
-        })
-
-        .catch( (err) => {
-	        if (err) {
-		        res.status(401).json({'Error': err.message})
-	        }
-        })
-	  });
+      .then( trip => {
+        res.status(200).json(trip)
+      })
+      .catch( err => {
+        if (err) {
+          res.status(401).json({'Error': err.message})
+        }
+      })
+	  })
   });
 
-  // UPDATE
-  // FIXME: this does not return the updated trip, returns the old trip WHY????
-  // FIXME: app.put();
-  app.post('/trips/:id', (req, res) => {
-	  Trips.findByIdAndUpdate(req.params.id, req.body)
-      .then(trip => {
-        res.json(trip);
+  // UPDATE a Trip
+  app.put('/trips/:id', (req, res) => {
+	  Users.currentUser(req.token, (err, user) => {
+		  if (err) {
+			  // unauthorized
+			  return res.status(400).json({'Error': 'User is unauthorized'})
+		  }
+		  if (!user) {
+			  //no error but, no user found
+			  return res.status(500).json({'Error': 'No user found'})
+		  }
+
+		  Trips.findByIdAndUpdate(req.params.id, req.body)
+      .then( trip => {
+        res.status(200).json(trip);
       })
-      .catch((err) => {
-        console.log(`Error: ${err.message}`)
+      .catch( err => {
+        res.status(401).json({ 'Error': err.message })
       })
+	  })
   });
 
   // DELETE Trip
   app.delete('/trips/:id', (req, res) => {
-    console.log("Delete trip");
-	  Trips.findByIdAndRemove(req.params.id)
-      .then((trip) => {
+	  Users.currentUser(req.token, (err, user) => {
+		  if (err) {
+			  // unauthorized
+			  return res.status(400).json({'Error': 'User is unauthorized'})
+		  }
+		  if (!user) {
+			  //no error but, no user found
+			  return res.status(500).json({'Error': 'No user found'})
+		  }
+
+		  Trips.findByIdAndRemove(req.params.id)
+      .then( trip => {
         res.status(200).json(trip);
       })
-      .catch((err) => {
-        console.log(err.message);
-        res.status(400).send(err.message)
+      .catch( err => {
+        res.status(400).json({ 'Error': err.message })
       })
-  });
+    })
+  })
 };
