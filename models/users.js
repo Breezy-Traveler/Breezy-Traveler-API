@@ -50,6 +50,10 @@ UserSchema.methods.toAuthJSON = function() {
   return this.generateJWT();
 };
 
+UserSchema.statics.currentUser = function(token, done) {
+	this.findOne({ 'local.token': token}, done)
+};
+
 
 UserSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('User', UserSchema);

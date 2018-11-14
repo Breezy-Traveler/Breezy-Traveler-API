@@ -1,75 +1,159 @@
 // controllers/trips.js
 
 module.exports = (app) => {
-  const TripModel = require('../models/trips');
-  const trip = {
-    isPublic: false,
-    place: 'London'
-  };
 
-// ********** ROUTES *********** //
+  const Trips = require('../models/trips');
+  const Users = require('../models/users');
+  const authorized = require('../src/config/auth');
+
+
+  // ********** ROUTES *********** //
   app.get('/', (req, res) => {
-    res.render('index')
+    res.status(401).json({'Error': 'You must be logged in first'})
   });
 
-// READ all trips
-  app.get('/trips', (req, res) => {
-    TripModel.find({}, (err, trips) => {
-      res.json(trips)
-    });
+  // TODO: Check if the user is authenticated refactor for code reuse
+  // const isAuthorized = () => {
+  //   Users.currentUser(req.token, (err, user) => {
+  // 	  if (err) {
+  // 		  // unauthorized
+  // 		  return res.status(400).json({'Error': 'User is unauthorized'})
+  // 	  }
+  // 	  if (!user) {
+  // 		  //no error but, no user found
+  // 		  return res.status(500).json({'Error': 'No user found'})
+  // 	  }
+  //   })
+  // };
+
+  // READ all trips
+  app.get('/trips', authorized.required, (req, res) => {
+
+    Users.currentUser(req.token, (err, user) => {
+      if (err) {
+        // unauthorized
+        return res.status(400).json({'Error': 'User is unauthorized'})
+      }
+      if (!user) {
+        //no error but, no user found
+        return res.status(500).json({'Error': 'No user found'})
+      }
+
+      Trips.find({userId: user._id})
+        .then(trips => {
+          res.status(200).json(trips)
+        })
+        .catch(err => {
+          res.status(401).json({'Error': err.message})
+        })
+    })
   });
 
   // SHOW one trip
-  app.get('/trips/:id', (req, res) => {
-    TripModel.findById(req.params.id)
-      .then(trip => {
-        res.json(trip)
-      }).catch((err) => {
-      console.log(`Error: ${err.message}`);
-    })
-  });
+  app.get('/trips/:id', authorized.required, (req, res) => {
 
-// CREATE a Trip
-  app.post('/trips', (req, res) => {
-
-    let trip = new TripModel({
-      isPublic: req.body.isPublic,
-      place: req.body.place,
-      hotels: req.body.hotels
-    });
-
-    trip.save( (err, trip) => {
+    Users.currentUser(req.token, (err, user) => {
       if (err) {
-        res.send(err.message)
-      } else {
-        res.json(trip)
+        // unauthorized
+        return res.status(400).json({'Error': 'User is unauthorized'})
       }
+      if (!user) {
+        //no error but, no user found
+        return res.status(500).json({'Error': 'No user found'})
+      }
+
+      Trips.findById(req.params.id)
+        .then(trip => {
+          res.status(200).json(trip)
+        })
+        .catch(err => {
+          res.status(401).json({'Error': `${err.message}`})
+        })
     })
   });
 
-  // UPDATE
-  // FIXME: this does not return the updated trip, returns the old trip WHY????
-  // FIXME: app.put();
-  app.post('/trips/:id', (req, res) => {
-    TripModel.findByIdAndUpdate(req.params.id, req.body)
-      .then(trip => {
-        res.json(trip);
-      })
-      .catch((err) => {
-        console.log(`Error: ${err.message}`)
-      })
+  // CREATE a Trip
+  app.post('/trips', authorized.required, (req, res) => {
+
+    Users.currentUser(req.token, (err, user) => {
+      if (err) {
+        // unauthorized
+        return res.status(400).json({'Error': 'User is unauthorized'})
+      }
+      if (!user) {
+        //no error but, no user found
+        return res.status(500).json({'Error': 'No user found'})
+      }
+
+      let trip = new Trips({
+        isPublic: req.body.isPublic,
+        place: req.body.place,
+        notes: req.body.notes,
+        coverImageUrl: req.body.coverImageUrl,
+        hotels: req.body.hotels,
+        sites: req.body.sites,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+        userId: user._id
+      });
+
+      trip.save()
+        .then(trip => {
+          res.status(201).json(trip)
+        })
+        .catch(err => {
+          if (err) {
+            res.status(401).json({'Error': err.message})
+          }
+        })
+    })
+  });
+
+  // UPDATE a Trip
+  app.put('/trips/:id', authorized.required, (req, res) => {
+    Users.currentUser(req.token, (err, user) => {
+      if (err) {
+        // unauthorized
+        return res.status(400).json({'Error': 'User is unauthorized'})
+      }
+      if (!user) {
+        //no error but, no user found
+        return res.status(500).json({'Error': 'No user found'})
+      }
+
+      Trips.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then(updatedTrip => {
+          res.status(200).json(updatedTrip);
+        })
+        .catch(err => {
+          res.status(401).json({'Error': err.message})
+        })
+    })
   });
 
   // DELETE Trip
-  app.delete('/trips/:id', (req, res) => {
-    console.log("Delete trip");
-    TripModel.findByIdAndRemove(req.params.id)
-      .then((trip) => {
-        res.status(200).json(trip);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        res.status(400).send(err.message)
-      })
-  });
+  app.delete('/trips/:id', authorized.required, (req, res) => {
+    Users.currentUser(req.token, (err, user) => {
+      if (err) {
+        // unauthorized
+        return res.status(400).json({'Error': 'User is unauthorized'})
+      }
+      if (!user) {
+        //no error but, no user found
+        return res.status(500).json({'Error': 'No user found'})
+      }
+
+      Trips.findByIdAndRemove(req.params.id)
+        .then(trip => {
+          if (trip) {
+            res.status(200).json(trip);
+          } else {
+            res.status(404).json({'Error': 'No trip found'})
+          }
+        })
+        .catch(err => {
+          res.status(400).json({'Error': 'Bad request'})
+        })
+    })
+  })
 };
