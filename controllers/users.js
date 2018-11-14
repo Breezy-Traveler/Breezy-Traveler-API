@@ -10,7 +10,7 @@ module.exports = (app, passport) => {
   // =====================================
 
   app.get('/', function (req, res) {
-    res.render('index.hbs'); // load the index.hbs file
+    res.render('index'); // load the index.hbs file
   });
 
   // =====================================
@@ -19,8 +19,8 @@ module.exports = (app, passport) => {
 
   // SHOW the login form
   app.get('/login', function(req, res) {
-    // render the page and pass in any flash data if it exists
-    res.render('login', { message: req.flash('loginMessage') });
+    // render the page
+    res.render('login');
   });
 
 	app.post('/login', function(req, res, next) {
@@ -43,7 +43,7 @@ module.exports = (app, passport) => {
 
   // SHOW the signup form
   app.get('/signup', function(req, res) {
-    // render the page and pass in any flash data if it exists
+    // render the page
     res.render('signup');
   });
 
