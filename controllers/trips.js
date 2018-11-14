@@ -122,8 +122,8 @@ module.exports = (app) => {
 		  }
 
 		  Trips.findByIdAndUpdate(req.params.id, req.body)
-      .then( trip => {
-        res.status(200).json(trip);
+      .then( updatedTrip => {
+        res.status(200).json(updatedTrip);
       })
       .catch( err => {
         res.status(401).json({ 'Error': err.message })
