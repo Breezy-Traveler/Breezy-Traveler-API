@@ -6,7 +6,6 @@ const app = exp();
 const PORT = process.env.PORT;
 const mongoose = require('mongoose');
 const passport = require('passport');
-const flash = require('connect-flash');
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -19,7 +18,7 @@ const dbConfig = require('./src/config/database');
 // Database configuration ================================================================
 mongoose.Promise = global.Promise;
 mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, error => {
-  if (error) { console.log(error.message) }
+  if (error) {console.log(`Error connecting: ${error.message}`)}
   else { console.log('connected to mongoose') }
 });
 mongoose.set('debug', true);
@@ -51,7 +50,6 @@ app.use( session({
 }));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 // CONTROLLERS =============================================================================
