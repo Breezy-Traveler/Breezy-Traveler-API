@@ -88,7 +88,10 @@ module.exports = (app) => {
 		  let trip = new Trips({
 			  isPublic: req.body.isPublic,
 			  place: req.body.place,
+        notes: req.body.notes,
+        coverImageUrl: req.body.coverImageUrl,
 			  hotels: req.body.hotels,
+        sites: req.body.sitesl
         startDate: req.body.startDate,
         endDate: req.body.endDate,
         userId: user._id
