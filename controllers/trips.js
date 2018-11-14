@@ -1,35 +1,32 @@
 // controllers/trips.js
 
 module.exports = (app) => {
+
   const Trips = require('../models/trips');
   const Users = require('../models/users');
   const authorized = require('../src/config/auth');
 
-  const trip = {
-    isPublic: false,
-    place: 'London'
-  };
 
-// ********** ROUTES *********** //
+  // ********** ROUTES *********** //
   app.get('/', (req, res) => {
     res.status(401).json({'Error': 'You must be logged in first'})
   });
 
-	// Check if the user is authenticated
-  const isAuthorized = () => {
-	  Users.currentUser(req.token, (err, user) => {
-		  if (err) {
-			  // unauthorized
-			  return res.status(400).json({'Error': 'User is unauthorized'})
-		  }
-		  if (!user) {
-			  //no error but, no user found
-			  return res.status(500).json({'Error': 'No user found'})
-		  }
-	  })
-  };
+	// TODO: Check if the user is authenticated refactor for code reuse
+  // const isAuthorized = () => {
+	//   Users.currentUser(req.token, (err, user) => {
+	// 	  if (err) {
+	// 		  // unauthorized
+	// 		  return res.status(400).json({'Error': 'User is unauthorized'})
+	// 	  }
+	// 	  if (!user) {
+	// 		  //no error but, no user found
+	// 		  return res.status(500).json({'Error': 'No user found'})
+	// 	  }
+	//   })
+  // };
 
-// READ all trips
+  // READ all trips
   app.get('/trips', authorized.required, (req, res) => {
 
     Users.currentUser(req.token, (err, user) => {
@@ -75,7 +72,7 @@ module.exports = (app) => {
 	  })
   });
 
-// CREATE a Trip
+  // CREATE a Trip
   app.post('/trips', authorized.required, (req, res) => {
 
 	  Users.currentUser(req.token, (err, user) => {
