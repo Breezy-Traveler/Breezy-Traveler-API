@@ -5,7 +5,7 @@ module.exports = (app) => {
   const Trips = require('../models/trips');
   const Users = require('../models/users');
   const authorized = require('../src/config/auth');
-  const http = require('https');
+  const request = require('request');
   const gettyApi = require("gettyimages-api");
 
   // ********** ROUTES *********** //
@@ -162,17 +162,31 @@ module.exports = (app) => {
 
   const apiKey = process.env.GETTY_KEY
   const appSecret = process.env.GETTY_SECRET
-  app.get('/', (req, res) => {
+  const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=london';
 
-    const creds = { apiKey: apiKey, apiSecret: appSecret, username: "your_username", password: "your_password" };
-    const client = new gettyApi(creds);
+  const options = {
+    url: gettyUrl,
+    headers: {
+      'Api-Key': apiKey
+    }
+  };
 
-    client.searchimages().withPage(1).withPageSize(1).withPhrase('cats')
-      .execute().then(response => {
-      console.log(JSON.stringify(response.images[0]));
-    }, err => {
-      throw err;
-    });
+  /*
+    1. take search term from iOS client
+    2. concatenate term to query string
+   */
+
+
+  app.get('/image-search', (req, res) => {
+
+    request(options, function(err, response, body) {
+      if (err) {
+        console.log('Error: ', err.message)
+      } else {
+        const jsonObj = JSON.parse(body)
+        res.status(200).json(jsonObj.images)
+      }
+    })
   });
 
 };
