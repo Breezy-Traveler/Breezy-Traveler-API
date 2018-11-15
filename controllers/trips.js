@@ -160,30 +160,33 @@ module.exports = (app) => {
 
   /*********************** Getty Images *********************/
 
-  const apiKey = process.env.GETTY_KEY
-  const appSecret = process.env.GETTY_SECRET
-  const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=london';
-
-  const options = {
-    url: gettyUrl,
-    headers: {
-      'Api-Key': apiKey
-    }
-  };
-
-  /*
-    1. take search term from iOS client
-    2. concatenate term to query string
-   */
-
+  const apiKey = process.env.GETTY_KEY;
+  const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';
+  require('querystring');
 
   app.get('/image-search', (req, res) => {
 
-    request(options, function(err, response, body) {
+    // Access the provided 'phrase' query parameter
+    let phrase = req.query.phrase.toLowerCase();
+    console.log('Params: ', phrase);
+
+    const searchTerm = phrase;
+    const options = {
+      url: gettyUrl,
+      headers: {
+        'Api-Key': apiKey
+      }
+    };
+
+    options.url += searchTerm;
+    // console.log('New URL: ', options.url);
+
+    request(options, (err, response, body) => {
+
       if (err) {
-        console.log('Error: ', err.message)
+        res.status(500).json({'Error: ': `${err.message}`})
       } else {
-        const jsonObj = JSON.parse(body)
+        const jsonObj = JSON.parse(body);
         res.status(200).json(jsonObj.images)
       }
     })
