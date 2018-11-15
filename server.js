@@ -14,7 +14,6 @@ const session = require('express-session');
 const dbConfig = require('./src/config/database');
 
 
-
 // Database configuration ================================================================
 mongoose.Promise = global.Promise;
 mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, error => {
