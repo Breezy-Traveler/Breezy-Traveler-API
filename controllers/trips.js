@@ -5,12 +5,13 @@ module.exports = (app) => {
   const Trips = require('../models/trips');
   const Users = require('../models/users');
   const authorized = require('../src/config/auth');
-
+  const request = require('request');
+  const gettyApi = require("gettyimages-api");
 
   // ********** ROUTES *********** //
-  app.get('/', (req, res) => {
-    res.status(401).json({'Error': 'You must be logged in first'})
-  });
+  // app.get('/', (req, res) => {
+  //   res.status(401).json({'Error': 'You must be logged in first'})
+  // });
 
   // TODO: Check if the user is authenticated refactor for code reuse
   // const isAuthorized = () => {
@@ -155,5 +156,37 @@ module.exports = (app) => {
           res.status(400).json({'Error': 'Bad request'})
         })
     })
-  })
+  });
+
+  /*********************** Getty Images *********************/
+
+  const apiKey = process.env.GETTY_KEY;
+  const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';
+  require('querystring');
+
+  app.get('/image-search', (req, res) => {
+
+    // Access the provided 'phrase' query parameter
+    let phrase = req.query.phrase.toLowerCase();
+    console.log('Params: ', phrase);
+
+    const searchTerm = phrase;
+    const options = {
+      url: gettyUrl,
+      headers: { 'Api-Key': apiKey }
+    };
+
+    options.url += searchTerm;
+
+    request(options, (err, response, body) => {
+
+      if (err) {
+        res.status(500).json({'Error: ': `${err.message}`})
+      } else {
+        const jsonObj = JSON.parse(body);
+        res.status(200).json(jsonObj.images)
+      }
+    })
+  });
+
 };
