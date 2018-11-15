@@ -56,6 +56,7 @@ app.use(passport.session()); // persistent login sessions
 // load our routes and pass in our app and fully configured passport
 require('./controllers/users')(app, passport);
 require('./controllers/trips')(app);
+require('./controllers/hotels')(app);
 
 
 // LAUNCH ==================================================================================
