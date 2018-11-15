@@ -173,13 +173,10 @@ module.exports = (app) => {
     const searchTerm = phrase;
     const options = {
       url: gettyUrl,
-      headers: {
-        'Api-Key': apiKey
-      }
+      headers: { 'Api-Key': apiKey }
     };
 
     options.url += searchTerm;
-    // console.log('New URL: ', options.url);
 
     request(options, (err, response, body) => {
 
