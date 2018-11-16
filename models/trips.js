@@ -10,7 +10,7 @@ const TripSchema = new Schema({
   place         : { type: String  },
   notes         : { type: String  },
   coverImageUrl : { type: String  },
-  hotels        : { type: Array   },
+  hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
   sites         : { type: Array   },
   startDate     : { type: Date    },
   endDate       : { type: Date    },
