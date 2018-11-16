@@ -60,5 +60,5 @@ require('./controllers/hotels')(app);
 
 // LAUNCH ==================================================================================
 app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+  console.log(`\nServer listening on ${PORT}\n`);
 });

@@ -180,15 +180,11 @@ module.exports = (app) => {
       } else {
         const jsonObj = JSON.parse(body);
         const imgObjs = jsonObj.images;
-        // const imgUrlArray = imgObj['display_sizes'][0]['uri'];
-        // console.log(imgObjs)
+
         let imgArray = []
         imgObjs.forEach( (e) => {
           imgArray.push(e.display_sizes[0].uri)
         });
-        // console.log(imgArray);
-
-        // forEach(imgObj)
 
         res.status(200).json(imgArray)
       }

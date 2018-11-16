@@ -4,10 +4,13 @@ module.exports = (app) => {
 
   const Hotel  = require('../models/hotels');
   const User   = require('../models/users');
+  const Trip   = require('../models/trips');
   const authorized = require('../src/config/auth');
 
   // CREATE a hotel
   app.post('/trips/:id/hotels', authorized.required, (req, res) => {
+
+    // const Parent = mongoose.model('Trip')
 
     User.currentUser(req.token, (err, user) => {
       if (err) {
@@ -19,21 +22,29 @@ module.exports = (app) => {
         return res.status(500).json({'Error': 'No user found'})
       }
 
-      let hotel = new Hotel({
-        name: req.params.name,
-        address: req.params.address,
-        tripId: req.params._id
+      console.log('\nTHE BODY: ', req.body, '\n')
+
+      Trip.findById(req.params.id, function(err, trip) {
+        let hotel = new Hotel({
+          name: req.body.name,
+          address: req.body.address,
+          _tripId: req.params.id
+        });
+
+        trip.hotels.push(hotel);
+      // FIXME: Make hotel save into a collection
+        trip.save()
+          .then(savedTrip => {
+            res.status(201).json(savedTrip)
+          })
+          .catch(err => {
+            if (err) {
+              res.status(401).json({'Error': err.message})
+            }
+          })
       });
 
-      hotel.save()
-        .then(hotel => {
-          res.status(201).json(hotel)
-        })
-        .catch(err => {
-          if (err) {
-            res.status(401).json({'Error': err.message})
-          }
-        })
+
     })
   });
 
