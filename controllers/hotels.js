@@ -28,14 +28,22 @@ module.exports = (app) => {
         let hotel = new Hotel({
           name: req.body.name,
           address: req.body.address,
-          _tripId: req.params.id
+          tripId: req.params.id
         });
 
-        trip.hotels.push(hotel);
+        trip.hotels.push(hotel._id);
       // FIXME: Make hotel save into a collection
         trip.save()
           .then(savedTrip => {
-            res.status(201).json(savedTrip)
+            hotel.save()
+              .then(savedHotel => {
+                res.status(201).json(savedHotel)
+              })
+              .catch(err => {
+                if (err) {
+                  res.status(401).json({'Error': err.message})
+                }
+              })
           })
           .catch(err => {
             if (err) {

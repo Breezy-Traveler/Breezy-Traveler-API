@@ -72,6 +72,7 @@ module.exports = (app) => {
       }
 
       Trips.find({userId: user._id})
+        .populate('hotels')
         .then(trips => {
           res.status(200).json(trips)
         })
