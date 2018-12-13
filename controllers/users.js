@@ -4,24 +4,9 @@ module.exports = (app, passport) => {
 
   const auth = require('../src/config/auth');
 
-
-  // =====================================
-  // HOME PAGE (with login links) ========
-  // =====================================
-
-  // app.get('/', function (req, res) {
-  //   res.render('index'); // load the index.hbs file
-  // });
-
   // =====================================
   // LOGIN ===============================
   // =====================================
-
-  // SHOW the login form
-  app.get('/login', function(req, res) {
-    // render the page
-    res.render('login');
-  });
 
 	app.post('/login', function(req, res, next) {
 		passport.authenticate('local-login', function(err, user) {
@@ -40,12 +25,6 @@ module.exports = (app, passport) => {
   // =====================================
   // SIGNUP ==============================
   // =====================================
-
-  // SHOW the signup form
-  app.get('/signup', function(req, res) {
-    // render the page
-    res.render('signup');
-  });
 
   app.post('/signup', function (req, res, next) {
 

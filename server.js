@@ -20,6 +20,7 @@ mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, error => {
   if (error) {console.log(`Error connecting: ${error.message}`)}
   else { console.log('connected to mongoose') }
 });
+
 mongoose.set('debug', true);
 mongoose.set('useCreateIndex', true);
 require('./src/config/passport')(passport); // pass passport for configuration
