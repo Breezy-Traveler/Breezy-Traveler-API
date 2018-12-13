@@ -8,7 +8,7 @@ const HotelSchema = new Schema({
   updatedAt     : { type: Date    },
   name          : { type: String  },
   address       : { type: String  },
-  tripId       : { type: Schema.Types.ObjectId, ref: 'Trip' }
+  tripId        : { type: Schema.Types.ObjectId, ref: 'Trip' }
 });
 
 
