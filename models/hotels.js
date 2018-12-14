@@ -6,7 +6,7 @@ const HotelSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
   name          : { type: String, required: true },
-  address       : { type: String, required: true },
+  address       : { type: String, default: "" },
   tripId        : { type: Schema.Types.ObjectId, ref: 'Trip' }
 });
 
@@ -18,7 +18,7 @@ HotelSchema.pre('save', function(next) {
   if (!this.createdAt ) {
     this.createdAt = now
   }
-  
+
   next()
 });
 
