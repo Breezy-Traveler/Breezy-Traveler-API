@@ -6,8 +6,8 @@ const Schema = mongoose.Schema;
 const HotelSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
-  name          : { type: String  },
-  address       : { type: String  },
+  name          : { type: String, required: true },
+  address       : { type: String, required: true },
   tripId        : { type: Schema.Types.ObjectId, ref: 'Trip' }
 });
 
