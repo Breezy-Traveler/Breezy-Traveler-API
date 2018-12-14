@@ -76,13 +76,4 @@ module.exports = function(passport) {
         return done(null, user);
       });
     }));
-
-  // passport.use('local-login', new LocalStrategy({
-  //     usernameField    : 'username',
-  //     passwordField : 'password',
-  //     passReqToCallback : true
-  //   }, (req, username, password, done) => {
-  //     console.log('yo!');
-  //     return done(null, null)
-  //   }));
 };
