@@ -36,7 +36,7 @@ module.exports = (app) => {
       });
   });
 
-  // READ all hotels
+  // READ all Hotels
   app.get('/trips/:id/hotels', authorized.required, setCurrentUser, function (req, res, next) {
     Trip.findById(req.params.id)
     .then(trip => {
@@ -49,5 +49,58 @@ module.exports = (app) => {
       })
     })
   });
+
+  // READ one Hotel
+  app.get('/trips/:tripId/hotels/:id', authorized.required, setCurrentUser, function (req, res, next) {
+    Trip.findById(req.params.tripId)
+    .then(trip => {
+      if (trip) {
+        Hotel.findById(req.params.id)
+        .then(hotel => {
+          res.status(200).json(hotel)
+        })
+        .catch(err => {
+          res.status(401).json({'Error': `${err.message}`})
+        })
+      } else {
+        res.status(404).json({'Error': 'No trip found'})
+      }
+    })
+  });
+
+  // UPDATE a Hotel
+  app.put('/trips/:tripId/hotels/:id', authorized.required, setCurrentUser, (req, res) => {
+
+      Trip.findById(req.params.tripId)
+      .then(trip => {
+        Hotel.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then(updatedHotel => {
+          res.status(200).json(updatedHotel);
+        })
+        .catch(err => {
+          res.status(401).json({'Error': err.message})
+        })
+      })
+      .catch(err => {
+        res.status(401).json({'Error': err.message})
+      })
+  });
+
+  // DELETE Hotel
+  app.delete('/trips/:tripId/hotels/:id', authorized.required, setCurrentUser, (req, res) => {
+
+      Trip.findById(req.params.tripId)
+      .then(trip => {
+        if (trip) {
+          Hotel.findByIdAndRemove(req.params.id)
+          .then(hotel => { res.status(200).json(hotel) })
+          .catch(err => { res.status(400).json({'Error': 'No hotel found'}) })
+        } else {
+          res.status(404).json({'Error': 'No trip found'})
+        }
+      })
+      .catch(err => { res.status(400).json({'Error': 'Bad request'}) })
+  });
+
 
 };
