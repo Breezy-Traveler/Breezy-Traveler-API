@@ -38,7 +38,16 @@ module.exports = (app) => {
 
   // READ all hotels
   app.get('/trips/:id/hotels', authorized.required, setCurrentUser, function (req, res, next) {
-    return res.send("Hello your request is very important to us, please stay on the line.")
+    Trip.findById(req.params.id)
+    .then(trip => {
+      Hotel.find({tripId: trip._id})
+      .then(hotels => {
+        res.status(200).json(hotels)
+      })
+      .catch(err => {
+        res.status(401).json({'Error': `${err.message}`})
+      })
+    })
   });
-  
+
 };

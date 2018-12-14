@@ -34,7 +34,6 @@ module.exports = (app) => {
   // READ all trips
   app.get('/trips', authorized.required, setCurrentUser, (req, res) => {
 
-    // FIXME: refactor to use setCurrentUser module
       Trips.find({userId: req.currentUser._id})
       .populate('hotels')
       .then(trips => {
