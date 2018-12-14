@@ -1,157 +1,89 @@
 // controllers/trips.js
-
 module.exports = (app) => {
 
   const Trips = require('../models/trips');
   const Users = require('../models/users');
   const authorized = require('../src/config/auth');
   const request = require('request');
-
-  // TODO: Check if the user is authenticated refactor for code reuse
-  // const isAuthorized = () => {
-  //   Users.currentUser(req.token, (err, user) => {
-  // 	  if (err) {
-  // 		  // unauthorized
-  // 		  return res.status(400).json({'Error': 'User is unauthorized'})
-  // 	  }
-  // 	  if (!user) {
-  // 		  //no error but, no user found
-  // 		  return res.status(500).json({'Error': 'No user found'})
-  // 	  }
-  //   })
-  // };
+  const setCurrentUser  = require('./set-current-user');
 
   // CREATE a Trip
-  app.post('/trips', authorized.required, (req, res) => {
+  app.post('/trips', authorized.required, setCurrentUser, (req, res) => {
 
-    Users.currentUser(req.token, (err, user) => {
-      if (err) {
-        // unauthorized
-        return res.status(400).json({'Error': 'User is unauthorized'})
-      }
-      if (!user) {
-        //no error but, no user found
-        return res.status(500).json({'Error': 'No user found'})
-      }
-
-      let trip = new Trips({
-        isPublic: req.body.isPublic,
-        place: req.body.place,
-        notes: req.body.notes,
-        coverImageUrl: req.body.coverImageUrl,
-        hotels: req.body.hotels,
-        sites: req.body.sites,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-        userId: user._id
-      });
+      let trip = new Trips(
+        {
+          isPublic        : req.body.isPublic,
+          place           : req.body.place,
+          notes           : req.body.notes,
+          coverImageUrl   : req.body.coverImageUrl,
+          hotels          : req.body.hotels,
+          sites           : req.body.sites,
+          startDate       : req.body.startDate,
+          endDate         : req.body.endDate,
+          userId          : req.currentUser._id // user set by setCurrerntUser
+        }
+      );
 
       trip.save()
-        .then(trip => {
-          res.status(201).json(trip)
-        })
-        .catch(err => {
-          if (err) {
-            res.status(401).json({'Error': err.message})
-          }
-        })
-    })
+      .then(trip => { res.status(201).json(trip) })
+      .catch(err => {
+        if (err) { res.status(401).json({'Error': err.message}) }
+      })
   });
 
   // READ all trips
-  app.get('/trips', authorized.required, (req, res) => {
+  app.get('/trips', authorized.required, setCurrentUser, (req, res) => {
 
-    Users.currentUser(req.token, (err, user) => {
-      if (err) {
-        // unauthorized
-        return res.status(400).json({'Error': 'User is unauthorized'})
-      }
-      if (!user) {
-        //no error but, no user found
-        return res.status(500).json({'Error': 'No user found'})
-      }
-
-      Trips.find({userId: user._id})
-        .populate('hotels')
-        .then(trips => {
-          res.status(200).json(trips)
-        })
-        .catch(err => {
-          res.status(401).json({'Error': err.message})
-        })
-    })
+    // FIXME: refactor to use setCurrentUser module
+      Trips.find({userId: req.currentUser._id})
+      .populate('hotels')
+      .then(trips => {
+        res.status(200).json(trips)
+      })
+      .catch(err => {
+        res.status(401).json({'Error': err.message})
+      })
   });
 
   // READ one trip
-  app.get('/trips/:id', authorized.required, (req, res) => {
-
-    Users.currentUser(req.token, (err, user) => {
-      if (err) {
-        // unauthorized
-        return res.status(400).json({'Error': 'User is unauthorized'})
-      }
-      if (!user) {
-        //no error but, no user found
-        return res.status(500).json({'Error': 'No user found'})
-      }
+  app.get('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
 
       Trips.findById(req.params.id)
-        .populate('hotels')
-        .then(trip => {
-          res.status(200).json(trip)
-        })
-        .catch(err => {
-          res.status(401).json({'Error': `${err.message}`})
-        })
-    })
+      .populate('hotels')
+      .then(trip => {
+        res.status(200).json(trip)
+      })
+      .catch(err => {
+        res.status(401).json({'Error': `${err.message}`})
+      })
   });
 
   // UPDATE a Trip
-  app.put('/trips/:id', authorized.required, (req, res) => {
-    Users.currentUser(req.token, (err, user) => {
-      if (err) {
-        // unauthorized
-        return res.status(400).json({'Error': 'User is unauthorized'})
-      }
-      if (!user) {
-        //no error but, no user found
-        return res.status(500).json({'Error': 'No user found'})
-      }
+  app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
 
       Trips.findByIdAndUpdate(req.params.id, req.body, {new: true})
-        .then(updatedTrip => {
-          res.status(200).json(updatedTrip);
-        })
-        .catch(err => {
-          res.status(401).json({'Error': err.message})
-        })
-    })
+      .then(updatedTrip => {
+        res.status(200).json(updatedTrip);
+      })
+      .catch(err => {
+        res.status(401).json({'Error': err.message})
+      })
   });
 
   // DELETE Trip
-  app.delete('/trips/:id', authorized.required, (req, res) => {
-    Users.currentUser(req.token, (err, user) => {
-      if (err) {
-        // unauthorized
-        return res.status(400).json({'Error': 'User is unauthorized'})
-      }
-      if (!user) {
-        //no error but, no user found
-        return res.status(500).json({'Error': 'No user found'})
-      }
+  app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
 
       Trips.findByIdAndRemove(req.params.id)
-        .then(trip => {
-          if (trip) {
-            res.status(200).json(trip);
-          } else {
-            res.status(404).json({'Error': 'No trip found'})
-          }
-        })
-        .catch(err => {
-          res.status(400).json({'Error': 'Bad request'})
-        })
-    })
+      .then(trip => {
+        if (trip) {
+          res.status(200).json(trip);
+        } else {
+          res.status(404).json({'Error': 'No trip found'})
+        }
+      })
+      .catch(err => {
+        res.status(400).json({'Error': 'Bad request'})
+      })
   });
 
   /*********************** Getty Images *********************/
@@ -190,6 +122,5 @@ module.exports = (app) => {
         res.status(200).json(imgArray)
       }
     })
-  });
-
-};
+  }); // <--------- End of getty images search
+}; // <-------- End of module.exports
