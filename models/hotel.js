@@ -10,15 +10,14 @@ const HotelSchema = new Schema({
   tripId        : { type: Schema.Types.ObjectId, ref: 'Trip' }
 });
 
+// SET createdAt AND updatedAt
 HotelSchema.pre('save', function(next) {
-  // SET createdAt AND updatedAt
   const now = new Date();
   this.updatedAt = now;
 
   if (!this.createdAt ) {
     this.createdAt = now
   }
-
   next()
 });
 

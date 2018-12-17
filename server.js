@@ -57,6 +57,7 @@ app.use(passport.session()); // persistent login sessions
 require('./controllers/users')(app, passport);
 require('./controllers/trips')(app);
 require('./controllers/hotels')(app);
+require('./controllers/sites')(app);
 
 
 // LAUNCH ==================================================================================

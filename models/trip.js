@@ -11,14 +11,14 @@ const TripSchema = new Schema({
   notes         : { type: String , required: true },
   coverImageUrl : { type: String },
   hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
-  sites         : { type: Array   },
+  sites         : [{ type: Schema.Types.ObjectId, ref: 'Site'}],
   startDate     : { type: Date    },
   endDate       : { type: Date    },
   userId        : { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
+// SET createdAt AND updatedAt
 TripSchema.pre('save', function(next) {
-  // SET createdAt AND updatedAt
   const now = new Date();
   this.updatedAt = now;
 
