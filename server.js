@@ -14,13 +14,13 @@ const session = require('express-session');
 const dbConfig = require('./src/config/database');
 
 
-
 // Database configuration ================================================================
 mongoose.Promise = global.Promise;
 mongoose.connect(dbConfig.uri, { useNewUrlParser: true }, error => {
   if (error) {console.log(`Error connecting: ${error.message}`)}
   else { console.log('connected to mongoose') }
 });
+
 mongoose.set('debug', true);
 mongoose.set('useCreateIndex', true);
 require('./src/config/passport')(passport); // pass passport for configuration
@@ -56,9 +56,10 @@ app.use(passport.session()); // persistent login sessions
 // load our routes and pass in our app and fully configured passport
 require('./controllers/users')(app, passport);
 require('./controllers/trips')(app);
+require('./controllers/hotels')(app);
 
 
 // LAUNCH ==================================================================================
 app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+  console.log(`\nServer listening on ${PORT}\n`);
 });
