@@ -1,16 +1,14 @@
 // models/hotels.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const HotelSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
-  name          : { type: String  },
-  address       : { type: String  },
+  name          : { type: String, required: true },
+  address       : { type: String, default: "" },
   tripId        : { type: Schema.Types.ObjectId, ref: 'Trip' }
 });
-
 
 HotelSchema.pre('save', function(next) {
   // SET createdAt AND updatedAt
@@ -18,8 +16,9 @@ HotelSchema.pre('save', function(next) {
   this.updatedAt = now;
 
   if (!this.createdAt ) {
-    this.createdAt = now;
+    this.createdAt = now
   }
+
   next()
 });
 

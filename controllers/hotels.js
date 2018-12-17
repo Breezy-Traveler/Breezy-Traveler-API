@@ -93,7 +93,7 @@ module.exports = (app) => {
       .then(trip => {
         if (trip) {
           Hotel.findByIdAndRemove(req.params.id)
-          .then(hotel => { res.status(200).json(hotel) })
+          .then(hotel => { res.status(202).json(hotel) })
           .catch(err => { res.status(400).json({'Error': 'No hotel found'}) })
         } else {
           res.status(404).json({'Error': 'No trip found'})

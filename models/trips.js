@@ -6,10 +6,10 @@ const Schema = mongoose.Schema;
 const TripSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
-  isPublic      : { type: Boolean },
-  place         : { type: String, text: true },
-  notes         : { type: String  },
-  coverImageUrl : { type: String  },
+  isPublic      : { type: Boolean, required: true },
+  place         : { type: String , required: true, text: true },
+  notes         : { type: String , required: true },
+  coverImageUrl : { type: String },
   hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
   sites         : { type: Array   },
   startDate     : { type: Date    },
@@ -29,6 +29,3 @@ TripSchema.pre('save', function(next) {
 });
 
 module.exports = mongoose.model('Trip', TripSchema);
-
-
-
