@@ -8,11 +8,13 @@ module.exports = (app) => {
   // CREATE a Hotel
   app.post('/trips/:id/hotels', authorized.required, setCurrentUser, (req, res) => {
       Trip.findById(req.params.id, function(err, trip) {
-        let hotel = new Hotel({
-          name: req.body.name,
-          address: req.body.address,
-          tripId: req.params.id
-        });
+        let hotel = new Hotel(
+          {
+            name: req.body.name,
+            address: req.body.address,
+            tripId: req.params.id
+          }
+        );
 
         trip.hotels.push(hotel._id);
         trip.save()
