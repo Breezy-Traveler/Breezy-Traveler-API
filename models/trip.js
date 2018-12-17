@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 const TripSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
-  isPublic      : { type: Boolean, required: true },
+  isPublic      : { type: Boolean, default: false },
   place         : { type: String , required: true },
-  notes         : { type: String , required: true },
+  notes         : { type: String , default: '' },
   coverImageUrl : { type: String },
   hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
   sites         : [{ type: Schema.Types.ObjectId, ref: 'Site'}],
