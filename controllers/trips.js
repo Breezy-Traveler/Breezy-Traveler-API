@@ -1,8 +1,7 @@
 // controllers/trips.js
 module.exports = (app) => {
 
-  const Trips = require('../models/trip');
-  const Users = require('../models/user');
+  const Trip = require('../models/trip');
   const authorized = require('../src/config/auth');
   const request = require('request');
   const setCurrentUser  = require('./set-current-user');
@@ -10,7 +9,7 @@ module.exports = (app) => {
   // CREATE a Trip
   app.post('/trips', authorized.required, setCurrentUser, (req, res) => {
 
-      let trip = new Trips(
+      let trip = new Trip(
         {
           isPublic        : req.body.isPublic,
           place           : req.body.place,
@@ -34,7 +33,7 @@ module.exports = (app) => {
   // READ all trips
   app.get('/trips', authorized.required, setCurrentUser, (req, res) => {
 
-      Trips.find({userId: req.currentUser._id})
+      Trip.find({userId: req.currentUser._id})
       .populate('hotels')
       .then(trips => {
         res.status(200).json(trips)
@@ -47,7 +46,7 @@ module.exports = (app) => {
   // READ one trip
   app.get('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
 
-      Trips.findById(req.params.id)
+      Trip.findById(req.params.id)
       .populate('hotels')
       .then(trip => {
         res.status(200).json(trip)
@@ -60,7 +59,7 @@ module.exports = (app) => {
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
 
-      Trips.findByIdAndUpdate(req.params.id, req.body, {new: true})
+      Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
       .then(updatedTrip => {
         res.status(200).json(updatedTrip);
       })
@@ -72,7 +71,7 @@ module.exports = (app) => {
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
 
-      Trips.findByIdAndRemove(req.params.id)
+      Trip.findByIdAndRemove(req.params.id)
       .then(trip => {
         if (trip) {
           res.status(200).json(trip);
@@ -85,7 +84,7 @@ module.exports = (app) => {
       })
   });
 
-  /*********************** Published Trips *********************/
+  /*********************** Published Trip *********************/
 
 	// READ all trips
 	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
@@ -102,7 +101,7 @@ module.exports = (app) => {
 			filter = { isPublic: true }
 		}
 
-		Trips.find(filter)
+		Trip.find(filter)
 			.populate('hotels')
 			.populate('sites')
 			.then(trips => {
