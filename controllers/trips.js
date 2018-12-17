@@ -33,9 +33,9 @@ module.exports = (app) => {
 
   // READ all trips
   app.get('/trips', authorized.required, setCurrentUser, (req, res) => {
-
       Trips.find({userId: req.currentUser._id})
       .populate('hotels')
+      .populate('sites')
       .then(trips => {
         res.status(200).json(trips)
       })
@@ -46,9 +46,9 @@ module.exports = (app) => {
 
   // READ one trip
   app.get('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-
       Trips.findById(req.params.id)
       .populate('hotels')
+      .populate('sites')
       .then(trip => {
         res.status(200).json(trip)
       })
@@ -59,7 +59,6 @@ module.exports = (app) => {
 
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-
       Trips.findByIdAndUpdate(req.params.id, req.body, {new: true})
       .then(updatedTrip => {
         res.status(200).json(updatedTrip);
@@ -71,7 +70,6 @@ module.exports = (app) => {
 
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-
       Trips.findByIdAndRemove(req.params.id)
       .then(trip => {
         if (trip) {
@@ -92,7 +90,6 @@ module.exports = (app) => {
   require('querystring');
 
   app.get('/image-search', (req, res) => {
-
     // Access the provided 'phrase' query parameter
     let phrase = req.query.phrase.toLowerCase();
     console.log('Params: ', phrase);
@@ -104,9 +101,7 @@ module.exports = (app) => {
     };
 
     options.url += searchTerm;
-
     request(options, (err, response, body) => {
-
       if (err) {
         res.status(500).json({'Error: ': `${err.message}`})
       } else {
