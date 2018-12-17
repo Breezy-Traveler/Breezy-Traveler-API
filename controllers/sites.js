@@ -92,7 +92,7 @@ module.exports = (app) => {
             if (site) {
               res.status(202).json(site)
             } else {
-              res.status(404).json({'Error': 'No trip found'})
+              res.status(404).json({'Error': 'No site found'})
             }
           })
           .catch(err => { res.status(400).json({'Error': 'No site found'}) })
