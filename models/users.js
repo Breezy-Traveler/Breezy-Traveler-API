@@ -5,16 +5,13 @@ const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 
-// define the schema for our user model
 const UserSchema = mongoose.Schema({
-
   local           : {
     username      : { type: String, unique: true },
     email         : { type: String, unique: true },
     password      : { type: String, required: true },
     token         : { type: String }
   },
-  
   facebook         : {
     id           : String,
     token        : String,
@@ -23,14 +20,13 @@ const UserSchema = mongoose.Schema({
   }
 });
 
-// methods ==============================
-
-// generating a hash
+// METHODS ==============================
+// GENERATE HASH
 UserSchema.methods.generateHash = function(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
-// checking if the password is valid
+// VALIDATE PASSWORD
 UserSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.local.password);
 };
@@ -54,7 +50,6 @@ UserSchema.methods.toAuthJSON = function() {
 UserSchema.statics.currentUser = function(token, done) {
 	this.findOne({ 'local.token': token}, done)
 };
-
 
 UserSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('User', UserSchema);
