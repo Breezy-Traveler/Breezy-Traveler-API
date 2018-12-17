@@ -1,6 +1,6 @@
 // config/passport.js
 const LocalStrategy = require('passport-local').Strategy;
-const Users = require('../../models/users');
+const Users = require('../../models/user');
 
 module.exports = function(passport) {
   // required for persistent login sessions
@@ -22,7 +22,6 @@ module.exports = function(passport) {
   // =========================================================================
   // we are using named strategies since we have one for login and one for signup
   // by default, if there was no name, it would just be called 'local'
-
   passport.use('local-signup', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
@@ -48,7 +47,6 @@ module.exports = function(passport) {
   // =========================================================================
   // LOCAL LOGIN =============================================================
   // =========================================================================
-
   passport.use('local-login', new LocalStrategy({
       // by default, local strategy uses username and password, we will add email
       usernameField    : 'username',

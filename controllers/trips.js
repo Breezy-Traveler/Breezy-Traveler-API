@@ -1,8 +1,8 @@
 // controllers/trips.js
 module.exports = (app) => {
 
-  const Trips = require('../models/trips');
-  const Users = require('../models/users');
+  const Trips = require('../models/trip');
+  const Users = require('../models/user');
   const authorized = require('../src/config/auth');
   const request = require('request');
   const setCurrentUser  = require('./set-current-user');
