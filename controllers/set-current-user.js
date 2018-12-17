@@ -1,5 +1,5 @@
 // set-curr-user.js
-const Users = require('../models/users.js');
+const Users = require('../models/user');
 
 module.exports = (req, res, next) => {
   Users.currentUser(req.token, (error, user) => {

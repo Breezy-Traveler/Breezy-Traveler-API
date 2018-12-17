@@ -1,13 +1,11 @@
 // controllers/users.js
 
 module.exports = (app, passport) => {
-
   const auth = require('../src/config/auth');
 
   // =====================================
   // LOGIN ===============================
   // =====================================
-
 	app.post('/login', function(req, res, next) {
 		passport.authenticate('local-login', function(err, user) {
 
@@ -24,9 +22,7 @@ module.exports = (app, passport) => {
   // =====================================
   // SIGNUP ==============================
   // =====================================
-
   app.post('/signup', function (req, res, next) {
-
   	const username = req.body.username;
 	  const email = req.body.email;
 	  const password = req.body.password;
@@ -69,7 +65,6 @@ module.exports = (app, passport) => {
   // =====================================
   // LOGOUT ==============================
   // =====================================
-
   app.get('/logout', (req, res) => {
     req.logout(); // provided by passport
     res.status(200).send('user is logged out')
