@@ -1,18 +1,26 @@
 // controllers/trips.js
 module.exports = (app) => {
 
-	const Trips = require('../models/trips');
+	const Trip = require('../models/trips');
 	const authorized = require('../src/config/auth');
 	const setCurrentUser = require('./set-current-user');
 
 	// READ all trips
 	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
 
-		//no search qurery is defined
+		var filter = null
 
-		//
+		//is search qurery defined
+		const searchTerm = req.query.searchTerm
+		if (searchTerm) {
+			filter = { $text: { $search: searchTerm }, isPublic: true }
+		} else {
 
-		Trips.find({ isPublic: true })
+			//if not, search all
+			filter = { isPublic: true }
+		}
+
+		Trip.find(filter)
 			.populate('hotels')
 			.populate('sites')
 			.then(trips => {

@@ -7,7 +7,7 @@ const TripSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
   isPublic      : { type: Boolean },
-  place         : { type: String  },
+  place         : { type: String, text: true },
   notes         : { type: String  },
   coverImageUrl : { type: String  },
   hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
