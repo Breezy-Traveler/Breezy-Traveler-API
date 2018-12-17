@@ -8,11 +8,13 @@ module.exports = (app) => {
   // CREATE a Site
   app.post('/trips/:id/sites', authorized.required, setCurrentUser, (req, res) => {
       Trip.findById(req.params.id, function(err, trip) {
-        let site = new Site({
-          name: req.body.name,
-          address: req.body.address,
-          tripId: req.params.id
-        });
+        let site = new Site(
+          {
+            name: req.body.name,
+            address: req.body.address,
+            tripId: req.params.id
+          }
+        );
 
         trip.sites.push(site._id);
         trip.save()
@@ -86,7 +88,13 @@ module.exports = (app) => {
       .then(trip => {
         if (trip) {
           Site.findByIdAndRemove(req.params.id)
-          .then(site => { res.status(202).json(site) })
+          .then(site => {
+            if (site) {
+              res.status(202).json(site)
+            } else {
+              res.status(404).json({'Error': 'No site found'})
+            }
+          })
           .catch(err => { res.status(400).json({'Error': 'No site found'}) })
         } else {
           res.status(404).json({'Error': 'No trip found'})
