@@ -2,14 +2,13 @@
 module.exports = (app) => {
 
   const Trip = require('../models/trip');
-  const User = require('../models/user');
   const authorized = require('../src/config/auth');
   const request = require('request');
   const setCurrentUser  = require('./set-current-user');
 
   // CREATE a Trip
   app.post('/trips', authorized.required, setCurrentUser, (req, res) => {
-      let trip = new Trips(
+      let trip = new Trip(
         {
           isPublic        : req.body.isPublic,
           place           : req.body.place,
@@ -89,6 +88,34 @@ module.exports = (app) => {
         res.status(400).json({'Error': 'Bad request'})
       })
   });
+
+  /*********************** Published Trip *********************/
+
+	// READ all trips
+	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
+
+		var filter = null
+
+		//is search qurery defined
+		const searchTerm = req.query.searchTerm
+		if (searchTerm) {
+			filter = { $text: { $search: searchTerm }, isPublic: true }
+		} else {
+
+			//if not, search all
+			filter = { isPublic: true }
+		}
+
+		Trip.find(filter)
+			.populate('hotels')
+			.populate('sites')
+			.then(trips => {
+				res.status(200).json(trips)
+			})
+			.catch(err => {
+				res.status(401).json({ 'Error': err.message })
+			})
+	});
 
   /*********************** Getty Images *********************/
   const apiKey = process.env.GETTY_KEY;
