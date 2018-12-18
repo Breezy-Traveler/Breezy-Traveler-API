@@ -1,16 +1,14 @@
 // controllers/trips.js
 module.exports = (app) => {
 
-  const Trips = require('../models/trips');
-  const Users = require('../models/users');
+  const Trip = require('../models/trip');
   const authorized = require('../src/config/auth');
   const request = require('request');
   const setCurrentUser  = require('./set-current-user');
 
   // CREATE a Trip
   app.post('/trips', authorized.required, setCurrentUser, (req, res) => {
-
-      let trip = new Trips(
+      let trip = new Trip(
         {
           isPublic        : req.body.isPublic,
           place           : req.body.place,
@@ -33,9 +31,9 @@ module.exports = (app) => {
 
   // READ all trips
   app.get('/trips', authorized.required, setCurrentUser, (req, res) => {
-
-      Trips.find({userId: req.currentUser._id})
+      Trip.find({userId: req.currentUser._id})
       .populate('hotels')
+      .populate('sites')
       .then(trips => {
         res.status(200).json(trips)
       })
@@ -46,9 +44,9 @@ module.exports = (app) => {
 
   // READ one trip
   app.get('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-
-      Trips.findById(req.params.id)
+      Trip.findById(req.params.id)
       .populate('hotels')
+      .populate('sites')
       .then(trip => {
         res.status(200).json(trip)
       })
@@ -59,10 +57,17 @@ module.exports = (app) => {
 
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
+      Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
+      .then( updatedTrip => {
+        const opts = [
+          { path: 'hotels'},
+          { path: 'sites'}
+        ];
 
-      Trips.findByIdAndUpdate(req.params.id, req.body, {new: true})
-      .then(updatedTrip => {
-        res.status(200).json(updatedTrip);
+        // Ensures that all hotels and sites get populated into the updated trip
+        Trip.populate(updatedTrip, opts, function( err, populatedTrip ) {
+          res.status(200).json(populatedTrip)
+        })
       })
       .catch(err => {
         res.status(401).json({'Error': err.message})
@@ -71,8 +76,7 @@ module.exports = (app) => {
 
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-
-      Trips.findByIdAndRemove(req.params.id)
+      Trip.findByIdAndRemove(req.params.id)
       .then(trip => {
         if (trip) {
           res.status(200).json(trip);
@@ -85,14 +89,40 @@ module.exports = (app) => {
       })
   });
 
-  /*********************** Getty Images *********************/
+  /*********************** Published Trip *********************/
 
+	// READ all trips
+	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
+
+		var filter = null
+
+		//is search qurery defined
+		const searchTerm = req.query.searchTerm
+		if (searchTerm) {
+			filter = { $text: { $search: searchTerm }, isPublic: true }
+		} else {
+
+			//if not, search all
+			filter = { isPublic: true }
+		}
+
+		Trip.find(filter)
+			.populate('hotels')
+			.populate('sites')
+			.then(trips => {
+				res.status(200).json(trips)
+			})
+			.catch(err => {
+				res.status(401).json({ 'Error': err.message })
+			})
+	});
+
+  /*********************** Getty Images *********************/
   const apiKey = process.env.GETTY_KEY;
   const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';
   require('querystring');
 
   app.get('/image-search', (req, res) => {
-
     // Access the provided 'phrase' query parameter
     let phrase = req.query.phrase.toLowerCase();
     console.log('Params: ', phrase);
@@ -104,9 +134,7 @@ module.exports = (app) => {
     };
 
     options.url += searchTerm;
-
     request(options, (err, response, body) => {
-
       if (err) {
         res.status(500).json({'Error: ': `${err.message}`})
       } else {

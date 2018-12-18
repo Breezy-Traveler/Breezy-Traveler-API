@@ -1,14 +1,14 @@
-// controllers/hotels.js
+// controllers/sites.js
 module.exports = (app) => {
-  const Hotel           = require('../models/hotel');
+  const Site            = require('../models/site');
   const Trip            = require('../models/trip');
   const authorized      = require('../src/config/auth');
   const setCurrentUser  = require('./set-current-user');
 
-  // CREATE a Hotel
-  app.post('/trips/:id/hotels', authorized.required, setCurrentUser, (req, res) => {
+  // CREATE a Site
+  app.post('/trips/:id/sites', authorized.required, setCurrentUser, (req, res) => {
       Trip.findById(req.params.id, function(err, trip) {
-        let hotel = new Hotel(
+        let site = new Site(
           {
             name: req.body.name,
             address: req.body.address,
@@ -16,11 +16,11 @@ module.exports = (app) => {
           }
         );
 
-        trip.hotels.push(hotel._id);
+        trip.sites.push(site._id);
         trip.save()
           .then(savedTrip => {
-            hotel.save()
-            .then(savedHotel => { res.status(201).json(savedHotel) })
+            site.save()
+            .then(savedSite => { res.status(201).json(savedSite) })
             .catch(err => {
               if (err) { res.status(401).json({'Error': err.message}) }
             })
@@ -33,13 +33,13 @@ module.exports = (app) => {
       });
   });
 
-  // READ all Hotels
-  app.get('/trips/:id/hotels', authorized.required, setCurrentUser, function (req, res, next) {
+  // READ all Sites
+  app.get('/trips/:id/sites', authorized.required, setCurrentUser, function (req, res, next) {
     Trip.findById(req.params.id)
     .then(trip => {
-      Hotel.find({tripId: trip._id})
-      .then(hotels => {
-        res.status(200).json(hotels)
+      Site.find({tripId: trip._id})
+      .then(sites => {
+        res.status(200).json(sites)
       })
       .catch(err => {
         res.status(401).json({'Error': `${err.message}`})
@@ -47,14 +47,14 @@ module.exports = (app) => {
     })
   });
 
-  // READ one Hotel
-  app.get('/trips/:tripId/hotels/:id', authorized.required, setCurrentUser, function (req, res, next) {
+  // READ one Site
+  app.get('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, function (req, res, next) {
     Trip.findById(req.params.tripId)
     .then(trip => {
       if (trip) {
-        Hotel.findById(req.params.id)
-        .then(hotel => {
-          res.status(200).json(hotel)
+        Site.findById(req.params.id)
+        .then(site => {
+          res.status(200).json(site)
         })
         .catch(err => {
           res.status(401).json({'Error': `${err.message}`})
@@ -65,13 +65,13 @@ module.exports = (app) => {
     })
   });
 
-  // UPDATE a Hotel
-  app.put('/trips/:tripId/hotels/:id', authorized.required, setCurrentUser, (req, res) => {
+  // UPDATE a Site
+  app.put('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, (req, res) => {
       Trip.findById(req.params.tripId)
       .then(trip => {
-        Hotel.findByIdAndUpdate(req.params.id, req.body, {new: true})
-        .then(updatedHotel => {
-          res.status(200).json(updatedHotel);
+        Site.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then(updatedSite => {
+          res.status(200).json(updatedSite);
         })
         .catch(err => {
           res.status(401).json({'Error': err.message})
@@ -82,20 +82,20 @@ module.exports = (app) => {
       })
   });
 
-  // DELETE Hotel
-  app.delete('/trips/:tripId/hotels/:id', authorized.required, setCurrentUser, (req, res) => {
+  // DELETE Site
+  app.delete('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, (req, res) => {
       Trip.findById(req.params.tripId)
       .then(trip => {
         if (trip) {
-          Hotel.findByIdAndRemove(req.params.id)
-          .then(hotel => {
-            if (hotel) {
-              res.status(202).json(hotel)
+          Site.findByIdAndRemove(req.params.id)
+          .then(site => {
+            if (site) {
+              res.status(202).json(site)
             } else {
-              res.status(400).json({'Error': 'No hotel found'})
+              res.status(404).json({'Error': 'No site found'})
             }
           })
-          .catch(err => { res.status(400).json({'Error': 'No hotel found'}) })
+          .catch(err => { res.status(400).json({'Error': 'No site found'}) })
         } else {
           res.status(404).json({'Error': 'No trip found'})
         }

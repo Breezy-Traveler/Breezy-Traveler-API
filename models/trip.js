@@ -6,19 +6,19 @@ const Schema = mongoose.Schema;
 const TripSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
-  isPublic      : { type: Boolean, required: true },
+  isPublic      : { type: Boolean, default: false },
   place         : { type: String , required: true },
-  notes         : { type: String , required: true },
+  notes         : { type: String , default: '' },
   coverImageUrl : { type: String },
   hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
-  sites         : { type: Array   },
+  sites         : [{ type: Schema.Types.ObjectId, ref: 'Site'}],
   startDate     : { type: Date    },
   endDate       : { type: Date    },
   userId        : { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
+// SET createdAt AND updatedAt
 TripSchema.pre('save', function(next) {
-  // SET createdAt AND updatedAt
   const now = new Date();
   this.updatedAt = now;
 
