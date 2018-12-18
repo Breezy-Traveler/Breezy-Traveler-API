@@ -57,56 +57,83 @@ module.exports = (app) => {
 
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-      Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
-      .then( updatedTrip => {
-        const opts = [
-          { path: 'hotels'},
-          { path: 'sites'}
-        ];
+    const currUserId = req.currentUser._id
+    // console.log("User ID: ", currUserId)
+    // Check if the trip belongs to the user
+    Trip.findById(req.params.id)
+    .then(foundTrip => {
+      // Check if the trip belongs to the current user
+      // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
+      if ( currUserId.equals(foundTrip.userId) ) {
+        Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then( updatedTrip => {
+          const opts = [
+            { path: 'hotels'},
+            { path: 'sites'}
+          ];
 
-        // Ensures that all hotels and sites get populated into the updated trip
-        Trip.populate(updatedTrip, opts, function( err, populatedTrip ) {
-          res.status(200).json(populatedTrip)
+          // Ensures that all hotels and sites get populated into the updated trip
+          Trip.populate(updatedTrip, opts, function( err, populatedTrip ) {
+            res.status(200).json(populatedTrip)
+          })
         })
-      })
-      .catch(err => {
-        res.status(401).json({'Error': err.message})
-      })
+        .catch(err => {
+          res.status(401).json({'Error': err.message})
+        })
+      } else {
+        res.status(401).json({"Error": "Sorry can't modify this trip"})
+      }
+    })
   });
 
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
+    const currUserId = req.currentUser._id
+    // Check if the trip belongs to the user
+    Trip.findById(req.params.id)
+    .then(foundTrip => {
+      // Check if the trip belongs to the current user
+      // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
+      if ( currUserId.equals(foundTrip.userId) ) {
       Trip.findByIdAndRemove(req.params.id)
-      .then(trip => {
-        if (trip) {
-          res.status(200).json(trip);
-        } else {
-          res.status(404).json({'Error': 'No trip found'})
-        }
-      })
-      .catch(err => {
-        res.status(400).json({'Error': 'Bad request'})
-      })
+        .then(trip => {
+          if (trip) {
+            res.status(200).json(trip);
+          } else {
+            res.status(404).json({'Error': 'No trip found'})
+          }
+        })
+        .catch(err => {
+          res.status(400).json({'Error': 'Bad request'})
+        })
+      } else {
+        res.status(401).json({"Error": "Sorry can't delete this trip"})
+      }
+    })
+
   });
 
   /*********************** Published Trip *********************/
-
-	// READ all trips
+	// READ public trips
 	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
-
 		var filter = null
-
-		//is search qurery defined
+		// is search qurery defined
 		const searchTerm = req.query.searchTerm
+    const searchLimit = req.query.limit
+    var limiter = 0
+
+    // Returns all trips.isPublic that place matches search term
 		if (searchTerm) {
 			filter = { $text: { $search: searchTerm }, isPublic: true }
+		} else if (searchLimit) {
+      limiter = parseInt(searchLimit)
+      filter = { isPublic: true }
 		} else {
-
-			//if not, search all
+      // No query return all public trips
 			filter = { isPublic: true }
-		}
+    }
 
-		Trip.find(filter)
+		Trip.find(filter).limit(limiter)
 			.populate('hotels')
 			.populate('sites')
 			.then(trips => {

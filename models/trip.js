@@ -7,7 +7,7 @@ const TripSchema = new Schema({
   createdAt     : { type: Date    },
   updatedAt     : { type: Date    },
   isPublic      : { type: Boolean, default: false },
-  place         : { type: String , required: true },
+  place         : { type: String , required: true, text: true },
   notes         : { type: String , default: '' },
   coverImageUrl : { type: String },
   hotels        : [{ type: Schema.Types.ObjectId, ref: 'Hotel'}],
@@ -26,6 +26,12 @@ TripSchema.pre('save', function(next) {
     this.createdAt = now;
   }
   next()
+});
+
+
+TripSchema.post('remove', function(next) {
+    Hotel.remove({ hotel: this._id }).exec();
+    next();
 });
 
 module.exports = mongoose.model('Trip', TripSchema);
