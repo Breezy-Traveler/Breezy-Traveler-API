@@ -88,17 +88,29 @@ module.exports = (app) => {
 
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
+    const currUserId = req.currentUser._id
+    // Check if the trip belongs to the user
+    Trip.findById(req.params.id)
+    .then(foundTrip => {
+      // Check if the trip belongs to the current user
+      // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
+      if ( currUserId.equals(foundTrip.userId) ) {
       Trip.findByIdAndRemove(req.params.id)
-      .then(trip => {
-        if (trip) {
-          res.status(200).json(trip);
-        } else {
-          res.status(404).json({'Error': 'No trip found'})
-        }
-      })
-      .catch(err => {
-        res.status(400).json({'Error': 'Bad request'})
-      })
+        .then(trip => {
+          if (trip) {
+            res.status(200).json(trip);
+          } else {
+            res.status(404).json({'Error': 'No trip found'})
+          }
+        })
+        .catch(err => {
+          res.status(400).json({'Error': 'Bad request'})
+        })
+      } else {
+        res.status(401).json({"Error": "Sorry can't delete this trip"})
+      }
+    })
+
   });
 
   /*********************** Published Trip *********************/
