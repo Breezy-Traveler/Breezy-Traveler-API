@@ -57,21 +57,31 @@ module.exports = (app) => {
 
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-      Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
-      .then( updatedTrip => {
-        const opts = [
-          { path: 'hotels'},
-          { path: 'sites'}
-        ];
+    const currUserId = req.currentUser._id
+    // Check if the trip belongs to the user
+    Trip.findById(req.params.id)
+    .then(foundTrip => {
+      // Check if the trip belongs to the current user
+      if (currUserId == foundTrip.userId) {
+        Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then( updatedTrip => {
+          const opts = [
+            { path: 'hotels'},
+            { path: 'sites'}
+          ];
 
-        // Ensures that all hotels and sites get populated into the updated trip
-        Trip.populate(updatedTrip, opts, function( err, populatedTrip ) {
-          res.status(200).json(populatedTrip)
+          // Ensures that all hotels and sites get populated into the updated trip
+          Trip.populate(updatedTrip, opts, function( err, populatedTrip ) {
+            res.status(200).json(populatedTrip)
+          })
         })
-      })
-      .catch(err => {
-        res.status(401).json({'Error': err.message})
-      })
+        .catch(err => {
+          res.status(401).json({'Error': err.message})
+        })
+      } else {
+        res.status(401).json({"Error": "Sorry can't modify someone's trip"})
+      }
+    })
   });
 
   // DELETE Trip
@@ -90,21 +100,25 @@ module.exports = (app) => {
   });
 
   /*********************** Published Trip *********************/
-
 	// READ all trips
+  // TODO: this is returning all trips currently
 	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
-
 		var filter = null
-
-		//is search qurery defined
+		// is search qurery defined
 		const searchTerm = req.query.searchTerm
 		if (searchTerm) {
 			filter = { $text: { $search: searchTerm }, isPublic: true }
+		} else if (!searchTerm) {
+      // TODO:
+        // Grab all the public trips
+        // add to a list
+        // grab 10 random trips
+        // set to filter
+        filter = { isPublic: true }
 		} else {
-
-			//if not, search all
+      // No query return 10 public trips
 			filter = { isPublic: true }
-		}
+    }
 
 		Trip.find(filter)
 			.populate('hotels')
