@@ -100,27 +100,26 @@ module.exports = (app) => {
   });
 
   /*********************** Published Trip *********************/
-	// READ all trips
-  // TODO: this is returning all trips currently
+	// READ public trips
 	app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
 		var filter = null
 		// is search qurery defined
 		const searchTerm = req.query.searchTerm
+    const searchLimit = req.query.limit
+    var limiter = 0
+
+    // Returns all trips.isPublic that place matches search term
 		if (searchTerm) {
 			filter = { $text: { $search: searchTerm }, isPublic: true }
-		} else if (!searchTerm) {
-      // TODO:
-        // Grab all the public trips
-        // add to a list
-        // grab 10 random trips
-        // set to filter
-        filter = { isPublic: true }
+		} else if (limit) {
+      limiter = parseInt(searchLimit)
+      filter = { isPublic: true }
 		} else {
-      // No query return 10 public trips
+      // No query return all public trips
 			filter = { isPublic: true }
     }
 
-		Trip.find(filter)
+		Trip.find(filter).limit(limiter)
 			.populate('hotels')
 			.populate('sites')
 			.then(trips => {
