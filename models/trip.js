@@ -28,4 +28,10 @@ TripSchema.pre('save', function(next) {
   next()
 });
 
+
+TripSchema.post('remove', function(next) {
+    Hotel.remove({ hotel: this._id }).exec();
+    next();
+});
+
 module.exports = mongoose.model('Trip', TripSchema);

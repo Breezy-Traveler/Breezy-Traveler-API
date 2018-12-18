@@ -58,11 +58,13 @@ module.exports = (app) => {
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
     const currUserId = req.currentUser._id
+    // console.log("User ID: ", currUserId)
     // Check if the trip belongs to the user
     Trip.findById(req.params.id)
     .then(foundTrip => {
       // Check if the trip belongs to the current user
-      if (currUserId == foundTrip.userId) {
+      // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
+      if ( currUserId.equals(foundTrip.userId) ) {
         Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
         .then( updatedTrip => {
           const opts = [
@@ -79,7 +81,7 @@ module.exports = (app) => {
           res.status(401).json({'Error': err.message})
         })
       } else {
-        res.status(401).json({"Error": "Sorry can't modify someone's trip"})
+        res.status(401).json({"Error": "Sorry can't modify this trip"})
       }
     })
   });
@@ -111,7 +113,7 @@ module.exports = (app) => {
     // Returns all trips.isPublic that place matches search term
 		if (searchTerm) {
 			filter = { $text: { $search: searchTerm }, isPublic: true }
-		} else if (limit) {
+		} else if (searchLimit) {
       limiter = parseInt(searchLimit)
       filter = { isPublic: true }
 		} else {
