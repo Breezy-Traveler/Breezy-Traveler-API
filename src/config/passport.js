@@ -61,7 +61,7 @@ module.exports = function(passport) {
           return done(err);
 
         // if no user is found, return the message
-        if (!user)s
+        if (!user)
           return done(null, false);
 
         // if the user is found but the password is wrong
