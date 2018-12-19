@@ -16,7 +16,7 @@ module.exports = (app) => {
           }
         );
 
-        trip.sites.push(site._id);
+        trip.site_ids.push(site._id);
         trip.save()
           .then(savedTrip => {
             site.save()
@@ -85,8 +85,10 @@ module.exports = (app) => {
   // DELETE Site
   app.delete('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, (req, res) => {
       Trip.findById(req.params.tripId)
-      .then(trip => {
+      .then( trip => {
         if (trip) {
+
+          // TODO add the removal of the id from the Trip array
           Site.findByIdAndRemove(req.params.id)
           .then(site => {
             if (site) {

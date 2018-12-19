@@ -1,6 +1,7 @@
 // models/sites.js
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const Trip = require('./trip');
 
 const SiteSchema = new Schema({
   createdAt     : { type: Date    },
@@ -19,6 +20,15 @@ SiteSchema.pre('save', function(next) {
     this.createdAt = now
   }
   next()
+});
+
+SiteSchema.pre('remove', function(next) {
+    Client.update(
+        { site_ids : this._id},
+        { $pull: { site_ids: this._id } },
+        { multi: true })  //if reference exists in multiple documents
+    .exec();
+    next();
 });
 
 module.exports = mongoose.model('Site', SiteSchema);

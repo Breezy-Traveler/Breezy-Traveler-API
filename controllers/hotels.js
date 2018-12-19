@@ -16,7 +16,7 @@ module.exports = (app) => {
           }
         );
 
-        trip.hotels.push(hotel._id);
+        trip.hotel_ids.push(hotel._id);
         trip.save()
           .then(savedTrip => {
             hotel.save()
@@ -87,6 +87,8 @@ module.exports = (app) => {
       Trip.findById(req.params.tripId)
       .then(trip => {
         if (trip) {
+
+          // TODO add the removal of the id from the Trip array
           Hotel.findByIdAndRemove(req.params.id)
           .then(hotel => {
             if (hotel) {
