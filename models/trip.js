@@ -30,7 +30,8 @@ TripSchema.pre('save', function(next) {
 
 
 TripSchema.post('remove', function(next) {
-    Hotel.remove({ hotel: this._id }).exec();
+    Hotel.remove({ trip: this._id }).exec();
+    Site.remove({ trip: this._id }).exec();
     next();
 });
 

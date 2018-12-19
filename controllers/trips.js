@@ -58,12 +58,12 @@ module.exports = (app) => {
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
     const currUserId = req.currentUser._id
-    // console.log("User ID: ", currUserId)
+    console.log("User ID: ", currUserId)
     // Check if the trip belongs to the user
     Trip.findById(req.params.id)
     .then(foundTrip => {
       // Check if the trip belongs to the current user
-      // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
+      console.log('UID & Trip UID: ', currUserId, foundTrip)
       if ( currUserId.equals(foundTrip.userId) ) {
         Trip.findByIdAndUpdate(req.params.id, req.body, {new: true})
         .then( updatedTrip => {
@@ -95,9 +95,11 @@ module.exports = (app) => {
       // Check if the trip belongs to the current user
       // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
       if ( currUserId.equals(foundTrip.userId) ) {
-      Trip.findByIdAndRemove(req.params.id)
+
+      Trip.remove({ _id: req.params.id })
         .then(trip => {
           if (trip) {
+            console.log("your trip was removed")
             res.status(200).json(trip);
           } else {
             res.status(404).json({'Error': 'No trip found'})
