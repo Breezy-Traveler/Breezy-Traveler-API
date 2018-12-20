@@ -2,7 +2,10 @@
 
 module.exports = (app, passport) => {
   const auth = require('../src/config/auth');
-
+  const authorized = require('../src/config/auth');
+  const setCurrentUser = require('./set-current-user');
+  const UserProfileImage = require('../models/user-profile');
+  
   // =====================================
   // LOGIN ===============================
   // =====================================
@@ -69,4 +72,57 @@ module.exports = (app, passport) => {
     req.logout(); // provided by passport
     res.status(200).send('user is logged out')
   });
+
+  // =====================================
+  // USER PROFILE ========================
+  // =====================================
+
+  app.post('/userProfile', authorized.required, setCurrentUser, (req, res, next) => {
+    image = {
+      payload: new Buffer(req.body.payload, 'base64'),
+      type: req.body.type
+    }
+
+    UserProfileImage.create(image)
+      .then((imageDoc) => {
+
+        //TODO: delete the old UserProfileImage if it exists
+
+        req.currentUser.profileImage = imageDoc
+        req.currentUser.save()
+          .then(udpatedUser => {
+            udpatedUser.profileImage = imageDoc._id
+            res.json(udpatedUser)
+          })
+          .catch(error => {
+            res.status(400).send(error)
+          })
+      })
+      .catch(error => {
+        res.status(400).send(error)
+      })
+  })
+
+  app.get('/userProfile/:userProfileId', (req, res, next) => {
+    const userProfileId = req.params.userProfileId
+
+    if (userProfileId == "no-image") {
+
+      //TODO: respond back a default image (maybe? remove this feature if not needed)
+
+    } else {
+      UserProfileImage.findById(userProfileId)
+        .then((imageDoc) => {
+          if (imageDoc) {
+            res.contentType(imageDoc.type)
+            res.send(imageDoc.payload)
+          } else {
+            res.status(404).send("No image found")
+          }
+        })
+        .catch(error => {
+          res.status(400).send(error)
+        })
+    }
+  })
 };

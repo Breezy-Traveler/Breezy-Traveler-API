@@ -58,8 +58,6 @@ require('./controllers/users')(app, passport);
 require('./controllers/trips')(app);
 require('./controllers/hotels')(app);
 require('./controllers/sites')(app);
-app.use(require('./controllers/users-grid'));
-app.use(require('./controllers/users-base64'));
 
 
 // LAUNCH ==================================================================================
