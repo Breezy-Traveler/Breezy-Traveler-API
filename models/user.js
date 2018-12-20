@@ -1,11 +1,12 @@
 // models/users.js
 
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 
-const UserSchema = mongoose.Schema({
+const UserSchema = Schema({
   local           : {
     username      : { type: String, unique: true },
     email         : { type: String, unique: true },
@@ -17,7 +18,8 @@ const UserSchema = mongoose.Schema({
     token        : String,
     name         : String,
     email        : String
-  }
+  },
+  profileImage   : { type: Schema.Types.ObjectId, ref: 'UserProfileImage' }
 });
 
 // METHODS ==============================
