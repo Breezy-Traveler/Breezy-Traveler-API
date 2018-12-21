@@ -18,7 +18,7 @@ module.exports = (app) => {
           sites           : req.body.sites,
           startDate       : req.body.startDate,
           endDate         : req.body.endDate,
-          userId          : req.currentUser._id // user set by setCurrerntUser
+          userId          : req.currentUser // user set by setCurrerntUser
         }
       );
 
@@ -34,6 +34,7 @@ module.exports = (app) => {
       Trip.find({userId: req.currentUser._id})
       .populate('hotels')
       .populate('sites')
+      .populate('userId')
       .then(trips => {
         res.status(200).json(trips)
       })
@@ -47,6 +48,7 @@ module.exports = (app) => {
       Trip.findById(req.params.id)
       .populate('hotels')
       .populate('sites')
+      .populate('userId')
       .then(trip => {
         res.status(200).json(trip)
       })
@@ -69,7 +71,8 @@ module.exports = (app) => {
         .then( updatedTrip => {
           const opts = [
             { path: 'hotels'},
-            { path: 'sites'}
+            { path: 'sites'},
+            { path: 'userId'}
           ];
 
           // Ensures that all hotels and sites get populated into the updated trip
@@ -136,6 +139,7 @@ module.exports = (app) => {
 		Trip.find(filter).limit(limiter)
 			.populate('hotels')
 			.populate('sites')
+      .populate('userId')
 			.then(trips => {
 				res.status(200).json(trips)
 			})
@@ -148,6 +152,7 @@ module.exports = (app) => {
   const apiKey = process.env.GETTY_KEY;
   const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';
   require('querystring');
+
 
   app.get('/image-search', (req, res) => {
     // Access the provided 'phrase' query parameter
