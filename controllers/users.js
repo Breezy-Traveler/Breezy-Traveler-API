@@ -5,7 +5,8 @@ module.exports = (app, passport) => {
   const authorized = require('../src/config/auth');
   const setCurrentUser = require('./set-current-user');
   const UserProfileImage = require('../models/user-profile');
-  
+  const request = require('request');
+
   // =====================================
   // LOGIN ===============================
   // =====================================
@@ -107,8 +108,17 @@ module.exports = (app, passport) => {
     const userProfileId = req.params.userProfileId
 
     if (userProfileId == "no-image") {
+      const options = {
+        url: "https://via.placeholder.com/512/0000FF/808080"
+      };
 
-      //TODO: respond back a default image (maybe? remove this feature if not needed)
+      request(options, (err, response, body) => {
+        if (err) {
+          res.status(400).json({ 'Error: ': `${err.message}` })
+        } else {
+          res.status(200).send(body)
+        }
+      })
 
     } else {
       UserProfileImage.findById(userProfileId)
