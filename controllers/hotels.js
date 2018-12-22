@@ -16,7 +16,7 @@ module.exports = (app) => {
           }
         );
 
-        trip.hotels.push(hotel._id);
+        trip.hotels.unshift(hotel._id);
         trip.save()
           .then(savedTrip => {
             hotel.save()

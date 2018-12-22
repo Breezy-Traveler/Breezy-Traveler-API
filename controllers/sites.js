@@ -16,7 +16,7 @@ module.exports = (app) => {
           }
         );
 
-        trip.sites.push(site._id);
+        trip.sites.unshift(site._id);
         trip.save()
           .then(savedTrip => {
             site.save()
