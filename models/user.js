@@ -5,20 +5,22 @@ const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 
-const UserSchema = mongoose.Schema({
-  local           : {
-    username      : { type: String, unique: true },
-    email         : { type: String, unique: true },
-    password      : { type: String, required: true },
-    token         : { type: String }
-  },
-  facebook         : {
-    id           : String,
-    token        : String,
-    name         : String,
-    email        : String
+const UserSchema = mongoose.Schema(
+  {
+    local: {
+      username   : { type: String, unique: true },
+      email      : { type: String, unique: true },
+      password   : { type: String, required: true },
+      token      : { type: String }
+    },
+    facebook: {
+      id         : String,
+      token      : String,
+      name       : String,
+      email      : String
+    }
   }
-});
+);
 
 // METHODS ==============================
 // GENERATE HASH
@@ -36,11 +38,13 @@ UserSchema.methods.generateJWT = function() {
   const expirationDate = new Date(today);
   expirationDate.setDate(today.getDate() + 90);
 
-  return jwt.sign({
-    email: this.email,
-    id: this._id,
-    exp: parseInt(expirationDate.getTime() / 1000, 10),
-  }, process.env.SECRET);
+  return jwt.sign(
+    {
+      email: this.email,
+      id: this._id,
+      exp: parseInt(expirationDate.getTime() / 1000, 10),
+    },
+    process.env.SECRET)
 };
 
 UserSchema.methods.toAuthJSON = function() {
@@ -48,7 +52,7 @@ UserSchema.methods.toAuthJSON = function() {
 };
 
 UserSchema.statics.currentUser = function(token, done) {
-	this.findOne({ 'local.token': token}, done)
+	this.findOne({ 'local.token': token }, done)
 };
 
 UserSchema.plugin(uniqueValidator);
