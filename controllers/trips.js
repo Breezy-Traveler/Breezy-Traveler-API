@@ -22,6 +22,7 @@ module.exports = (app) => {
       userId: req.currentUser._id // user set by setCurrerntUser
     });
 
+
     trip.save()
       .then(trip => {
         res.status(201).json(trip)
@@ -42,6 +43,7 @@ module.exports = (app) => {
     })
       .populate('hotels')
       .populate('sites')
+      .populate('userId')
       .then(trips => {
         res.status(200).json(trips)
       })
@@ -57,6 +59,7 @@ module.exports = (app) => {
     Trip.findById(req.params.id)
       .populate('hotels')
       .populate('sites')
+      .populate('userId')
       .then(trip => {
         res.status(200).json(trip)
       })
@@ -79,6 +82,7 @@ module.exports = (app) => {
         if (currUserId.equals(foundTrip.userId)) {
           Trip.findByIdAndUpdate(req.params.id, req.body, {
             new: true
+
           })
             .then(updatedTrip => {
               const opts = [{ path: 'hotels' }, { path: 'sites' }];
@@ -111,7 +115,6 @@ module.exports = (app) => {
         // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
         console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
         if (currUserId.equals(foundTrip.userId)) {
-
           // Use the hotel_ids to search the hotel collection and remove them
           foundTrip.hotel_ids.forEach(function (hotel_id) {
             Hotel.findByIdAndRemove(hotel_id)
@@ -219,8 +222,8 @@ module.exports = (app) => {
     }
 
     Trip.find(filter).limit(limiter)
-      .populate('hotels')
-      .populate('sites')
+      .populate('hotel_ids')
+      .populate('site_ids')
       .then(trips => {
         res.status(200).json(trips)
       })
@@ -231,10 +234,13 @@ module.exports = (app) => {
       })
   });
 
+
+
   /*********************** Getty Images *********************/
   const apiKey = process.env.GETTY_KEY;
   const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';
   require('querystring');
+
 
   app.get('/image-search', (req, res) => {
     // Access the provided 'phrase' query parameter

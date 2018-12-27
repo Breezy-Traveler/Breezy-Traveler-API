@@ -16,13 +16,13 @@ module.exports = (app) => {
           tripId: req.params.id
         }
       );
-      console.log("Hotel IDs: ", trip.hotel_ids)
+      // console.log("Hotel IDs: ", trip.hotel_ids)
 
-      trip.hotel_ids.push(hotel._id);
-      console.log("Hotel IDs: ", trip.hotel_ids)
-      trip.save()
-        .then(savedTrip => {
-          hotel.save()
+        trip.hotels.unshift(hotel._id);
+        trip.save()
+          .then(savedTrip => {
+            hotel.save()
+
             .then(savedHotel => { res.status(201).json(savedHotel) })
             .catch(err => {
               if (err) { res.status(401).json({ 'Error': err.message }) }
@@ -101,6 +101,7 @@ module.exports = (app) => {
               }
             })
             .catch(err => { res.status(400).json({ 'Error': 'No hotel found' }) })
+
         } else {
           res.status(404).json({ 'Error': 'No trip found' })
         }

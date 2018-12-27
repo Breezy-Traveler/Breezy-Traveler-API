@@ -15,11 +15,7 @@ module.exports = (app) => {
             tripId: req.params.id
           }
         );
-
-        console.log("Site IDs: ", trip.site_ids)
-        trip.site_ids.push(site._id);
-        console.log("Site IDs: ", trip.site_ids)
-
+        trip.sites.unshift(site._id);
         trip.save()
           .then(savedTrip => {
             site.save()
@@ -95,7 +91,7 @@ module.exports = (app) => {
           Site.findByIdAndRemove(req.params.id)
           .then(site => {
             if (site) {
-              res.status(202).json(site)
+              res.status(202).json()
             } else {
               res.status(404).json({'Error': 'No site found'})
             }
