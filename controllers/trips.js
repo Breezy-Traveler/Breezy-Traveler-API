@@ -81,13 +81,7 @@ module.exports = (app) => {
             new: true
           })
             .then(updatedTrip => {
-              const opts = [{
-                path: 'hotels'
-              },
-              {
-                path: 'sites'
-              }
-              ];
+              const opts = [{ path: 'hotels' }, { path: 'sites' }];
 
               // Ensures that all hotels and sites get populated into the updated trip
               Trip.populate(updatedTrip, opts, function (err, populatedTrip) {
@@ -123,13 +117,7 @@ module.exports = (app) => {
             Hotel.findByIdAndRemove(hotel_id)
               .then(removedHotel => {
                 console.log('your hotel was removed')
-                const opts = [{
-                  path: 'hotels'
-                },
-                {
-                  path: 'sites'
-                }
-                ];
+                const opts = [{ path: 'hotels' }, { path: 'sites' }];
 
                 // Ensures that all hotels and sites get populated into the updated trip
                 Trip.populate(foundTrip, opts, function (err, populatedTrip) {
