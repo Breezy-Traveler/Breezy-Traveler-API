@@ -2,17 +2,17 @@
 const Users = require('../models/user');
 
 module.exports = (req, res, next) => {
-  Users.currentUser(req.token, (error, user) => {
-    if (error) {
-      return res.status(401).send(error)
-    }
+  Users.findOne({ 'local.token': req.token }, (error, user) => {
+    if (error) {
+      return res.status(500).json(error)
+    }
 
-    if (!user) {
-      return res.status(500).send("No user and no error found")
-    }
+    if (!user) {
+      return res.status(401).json("Unauthorized")
+    }
 
-    req.currentUser = user
+    req.currentUser = user
 
-    next()
-  });
+    next()
+  });
 }
