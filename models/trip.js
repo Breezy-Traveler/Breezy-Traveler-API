@@ -34,8 +34,24 @@ TripSchema.pre('save', function(next) {
 TripSchema.pre('remove', function(next) {
     // 'this' is the trip being removed. Provide callbacks here if you want
     // to be notified of the calls' result.
-    Hotel.remove({ trip_id: this._id }).exec();
-    Site.remove({ trip_id: this._id }).exec();
+    Hotel.findByIdAndRemove({ trip_id: this._id })
+    .exec(removedHotel => {
+      console.log('removed hotel: ', removedHotel)
+    })
+    .catch(err => {
+      if (err) {
+        console.log(err.message)
+      }
+    });
+    Site.findByIdAndRemove({ trip_id: this._id })
+    .exec(removedSite => {
+      console.log('removed site: ', removedSite)
+    })
+    .catch(err => {
+      if (err) {
+        console.log(err.message)
+      }
+    });
     next();
 });
 
