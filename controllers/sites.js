@@ -90,7 +90,7 @@ module.exports = (app) => {
           Site.findByIdAndRemove(req.params.id)
           .then(site => {
             if (site) {
-              res.status(202).json(site)
+              res.status(202).json()
             } else {
               res.status(404).json({'Error': 'No site found'})
             }
