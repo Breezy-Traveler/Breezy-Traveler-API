@@ -16,7 +16,10 @@ module.exports = (app) => {
           }
         );
 
+        console.log("Site IDs: ", trip.site_ids)
         trip.site_ids.push(site._id);
+        console.log("Site IDs: ", trip.site_ids)
+
         trip.save()
           .then(savedTrip => {
             site.save()
