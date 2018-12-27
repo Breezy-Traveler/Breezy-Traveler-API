@@ -135,7 +135,7 @@ module.exports = (app) => {
                 Trip.populate(foundTrip, opts, function (err, populatedTrip) {
                   console.log(populatedTrip)
                 })
-                console.log(removedHotel); 
+                console.log(removedHotel);
               })
               .catch(err => {
                 if (err) {
@@ -163,7 +163,7 @@ module.exports = (app) => {
                 Trip.populate(foundTrip, opts, function (err, populatedTrip) {
                   console.log(populatedTrip)
                 })
-                console.log(removedSite); 
+                console.log(removedSite);
               })
               .catch(err => {
                 if (err) {
@@ -176,16 +176,16 @@ module.exports = (app) => {
 
 
           foundTrip.remove()
-          .then(removedTrip => {
-            if (removedTrip) {
-              console.log('your trip was removed')
-              res.status(200).json(removedTrip);
-            } else {
-              res.status(404).json({
-                'Error': 'Error deleting trip'
-              })
-            }
-          }) // <----- end of then()
+            .then(removedTrip => {
+              if (removedTrip) {
+                console.log('your trip was removed')
+                res.status(200).json(removedTrip);
+              } else {
+                res.status(404).json({
+                  'Error': 'Error deleting trip'
+                })
+              }
+            }) // <----- end of then()
             .catch(err => {
               if (err) {
                 res.status(400).json({
