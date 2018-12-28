@@ -73,7 +73,7 @@ module.exports = (app) => {
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
     const currUserId = req.currentUser._id
-    console.log("User ID: ", currUserId)
+    // console.log("User ID: ", currUserId)
     // Check if the trip belongs to the user
     Trip.findById(req.params.id)
       .then(foundTrip => {
@@ -113,20 +113,20 @@ module.exports = (app) => {
       .then(foundTrip => {
         // Validate the trip belongs to the current user
         // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
-        console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
+        // console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
         if (currUserId.equals(foundTrip.userId)) {
           // Use the hotel_ids to search the hotel collection and remove them
           foundTrip.hotel_ids.forEach(function (hotel_id) {
             Hotel.findByIdAndRemove(hotel_id)
               .then(removedHotel => {
-                console.log('your hotel was removed')
+                // console.log('your hotel was removed')
                 const opts = [{ path: 'hotels' }, { path: 'sites' }];
 
                 // Ensures that all hotels and sites get populated into the updated trip
                 Trip.populate(foundTrip, opts, function (err, populatedTrip) {
-                  console.log(populatedTrip)
+                  // console.log(populatedTrip)
                 })
-                console.log(removedHotel);
+                // console.log(removedHotel);
               })
               .catch(err => {
                 if (err) {
@@ -141,7 +141,7 @@ module.exports = (app) => {
           foundTrip.site_ids.forEach(function (site_id) {
             Site.findByIdAndRemove(site_id)
               .then(removedSite => {
-                console.log('your site was removed')
+                // console.log('your site was removed')
                 const opts = [{
                   path: 'hotels'
                 },
@@ -152,9 +152,9 @@ module.exports = (app) => {
 
                 // Ensures that all sites and sites get populated into the updated trip
                 Trip.populate(foundTrip, opts, function (err, populatedTrip) {
-                  console.log(populatedTrip)
+                  // console.log(populatedTrip)
                 })
-                console.log(removedSite);
+                // console.log(removedSite);
               })
               .catch(err => {
                 if (err) {
@@ -245,7 +245,7 @@ module.exports = (app) => {
   app.get('/image-search', (req, res) => {
     // Access the provided 'phrase' query parameter
     let phrase = req.query.phrase.toLowerCase();
-    console.log('Params: ', phrase);
+    // console.log('Params: ', phrase);
 
     const searchTerm = phrase;
     const options = {
