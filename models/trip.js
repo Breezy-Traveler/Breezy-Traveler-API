@@ -31,28 +31,26 @@ TripSchema.pre('save', function(next) {
   next()
 });
 
-TripSchema.pre('remove', function(next) {
-    // 'this' is the trip being removed. Provide callbacks here if you want
-    // to be notified of the calls' result.
-    Hotel.findByIdAndRemove({ trip_id: this._id })
-    .exec(removedHotel => {
-      console.log('removed hotel: ', removedHotel)
-    })
-    .catch(err => {
-      if (err) {
-        console.log(err.message)
+// pre docs https://mongoosejs.com/docs/middleware.html#pre
+TripSchema.pre('remove', function (next) {
+
+  // 'this' is the trip being removed. Provide callbacks here if you want
+  // to be notified of the calls' result.
+
+  // deleteMany docs https://mongoosejs.com/docs/api.html#model_Model.deleteMany
+  Hotel.deleteMany({ trip_id: this._id }, (error, removedHotel) => {
+      if (error) {
+        return next(error);
       }
-    });
-    Site.findByIdAndRemove({ trip_id: this._id })
-    .exec(removedSite => {
-      console.log('removed site: ', removedSite)
+
+      Site.deleteMany({ trip_id: this._id }, (error, removedSite) => {
+          if (error) {
+            return next(error);
+          }
+
+          next();
+        })
     })
-    .catch(err => {
-      if (err) {
-        console.log(err.message)
-      }
-    });
-    next();
 });
 
 
