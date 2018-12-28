@@ -18,7 +18,7 @@ module.exports = (app) => {
       );
       // console.log("Hotel IDs: ", trip.hotel_ids)
 
-        trip.hotels.unshift(hotel._id);
+        trip.hotel_ids.unshift(hotel._id);
         trip.save()
           .then(savedTrip => {
             hotel.save()

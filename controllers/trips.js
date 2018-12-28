@@ -15,7 +15,7 @@ module.exports = (app) => {
       place: req.body.place,
       notes: req.body.notes,
       coverImageUrl: req.body.coverImageUrl,
-      hotels: req.body.hotels,
+      hotel_ids: req.body.hotel_ids,
       sites: req.body.sites,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
@@ -41,7 +41,7 @@ module.exports = (app) => {
     Trip.find({
       userId: req.currentUser._id
     })
-      .populate('hotels')
+      .populate('hotel_ids')
       .populate('sites')
       .populate('userId')
       .then(trips => {
@@ -57,8 +57,8 @@ module.exports = (app) => {
   // READ one trip
   app.get('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
     Trip.findById(req.params.id)
-      .populate('hotels')
-      .populate('sites')
+      .populate('hotel_ids')
+      .populate('site_ids')
       .populate('userId')
       .then(trip => {
         res.status(200).json(trip)
@@ -85,7 +85,7 @@ module.exports = (app) => {
 
           })
             .then(updatedTrip => {
-              const opts = [{ path: 'hotels' }, { path: 'sites' }];
+              const opts = [{ path: 'hotel_ids' }, { path: 'sites' }];
 
               // Ensures that all hotels and sites get populated into the updated trip
               Trip.populate(updatedTrip, opts, function (err, populatedTrip) {
@@ -120,7 +120,7 @@ module.exports = (app) => {
             Hotel.findByIdAndRemove(hotel_id)
               .then(removedHotel => {
                 // console.log('your hotel was removed')
-                const opts = [{ path: 'hotels' }, { path: 'sites' }];
+                const opts = [{ path: 'hotel_ids' }, { path: 'sites' }];
 
                 // Ensures that all hotels and sites get populated into the updated trip
                 Trip.populate(foundTrip, opts, function (err, populatedTrip) {
@@ -143,7 +143,7 @@ module.exports = (app) => {
               .then(removedSite => {
                 // console.log('your site was removed')
                 const opts = [{
-                  path: 'hotels'
+                  path: 'hotel_ids'
                 },
                 {
                   path: 'sites'
