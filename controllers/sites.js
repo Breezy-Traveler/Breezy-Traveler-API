@@ -12,7 +12,7 @@ module.exports = (app) => {
           {
             name: req.body.name,
             address: req.body.address,
-            tripId: req.params.id
+            trip_id: req.params.id
           }
         );
         trip.site_ids.unshift(site._id);
@@ -36,7 +36,7 @@ module.exports = (app) => {
   app.get('/trips/:id/sites', authorized.required, setCurrentUser, function (req, res, next) {
     Trip.findById(req.params.id)
     .then(trip => {
-      Site.find({tripId: trip._id})
+      Site.find({trip_id: trip._id})
       .then(sites => {
         res.status(200).json(sites)
       })
@@ -47,8 +47,8 @@ module.exports = (app) => {
   });
 
   // READ one Site
-  app.get('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, function (req, res, next) {
-    Trip.findById(req.params.tripId)
+  app.get('/trips/:trip_id/sites/:id', authorized.required, setCurrentUser, function (req, res, next) {
+    Trip.findById(req.params.trip_id)
     .then(trip => {
       if (trip) {
         Site.findById(req.params.id)
@@ -65,8 +65,8 @@ module.exports = (app) => {
   });
 
   // UPDATE a Site
-  app.put('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, (req, res) => {
-      Trip.findById(req.params.tripId)
+  app.put('/trips/:trip_id/sites/:id', authorized.required, setCurrentUser, (req, res) => {
+      Trip.findById(req.params.trip_id)
       .then(trip => {
         Site.findByIdAndUpdate(req.params.id, req.body, {new: true})
         .then(updatedSite => {
@@ -82,8 +82,8 @@ module.exports = (app) => {
   });
 
   // DELETE Site
-  app.delete('/trips/:tripId/sites/:id', authorized.required, setCurrentUser, (req, res) => {
-      Trip.findById(req.params.tripId)
+  app.delete('/trips/:trip_id/sites/:id', authorized.required, setCurrentUser, (req, res) => {
+      Trip.findById(req.params.trip_id)
       .then( trip => {
         if (trip) {
 

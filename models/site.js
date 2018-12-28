@@ -8,7 +8,7 @@ const SiteSchema = new Schema({
   updatedAt     : { type: Date    },
   name          : { type: String, required: true },
   address       : { type: String, default: "" },
-  tripId        : { type: Schema.Types.ObjectId, ref: 'Trip' }
+  trip_id        : { type: Schema.Types.ObjectId, ref: 'Trip' }
 });
 
 // SET createdAt AND updatedAt
