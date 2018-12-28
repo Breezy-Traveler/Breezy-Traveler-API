@@ -111,61 +111,15 @@ module.exports = (app) => {
     // Check if the trip belongs to the user
     Trip.findById(req.params.id)
       .then(foundTrip => {
+        if (!foundTrip) {
+          return res.status(404).json({'Error': 'Trip not found'})
+        }
         // Validate the trip belongs to the current user
         // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
         // console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
         if (currUserId.equals(foundTrip.userId)) {
-          // Use the hotel_ids to search the hotel collection and remove them
-          foundTrip.hotel_ids.forEach(function (hotel_id) {
-            Hotel.findByIdAndRemove(hotel_id)
-              .then(removedHotel => {
-                // console.log('your hotel was removed')
-                const opts = [{ path: 'hotel_ids' }, { path: 'sites' }];
 
-                // Ensures that all hotels and sites get populated into the updated trip
-                Trip.populate(foundTrip, opts, function (err, populatedTrip) {
-                  // console.log(populatedTrip)
-                })
-                // console.log(removedHotel);
-              })
-              .catch(err => {
-                if (err) {
-                  res.status(400).json({
-                    'Error': err.message
-                  })
-                }
-              })
-          });
-
-          // Use the site_ids to search the site collection and remove them
-          foundTrip.site_ids.forEach(function (site_id) {
-            Site.findByIdAndRemove(site_id)
-              .then(removedSite => {
-                // console.log('your site was removed')
-                const opts = [{
-                  path: 'hotel_ids'
-                },
-                {
-                  path: 'site_ids'
-                }
-                ];
-
-                // Ensures that all sites and sites get populated into the updated trip
-                Trip.populate(foundTrip, opts, function (err, populatedTrip) {
-                  // console.log(populatedTrip)
-                })
-                // console.log(removedSite);
-              })
-              .catch(err => {
-                if (err) {
-                  res.status(400).json({
-                    'Error': err.message
-                  })
-                }
-              })
-          });
-
-
+          // WARNING: Trip schema has a pre hook
           foundTrip.remove()
             .then(removedTrip => {
               if (removedTrip) {
@@ -180,7 +134,7 @@ module.exports = (app) => {
             .catch(err => {
               if (err) {
                 res.status(400).json({
-                  'Error': 'Trip not found'
+                  'Error': err
                 })
               }
             })
