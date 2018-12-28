@@ -15,7 +15,7 @@ module.exports = (app) => {
             tripId: req.params.id
           }
         );
-        trip.sites.unshift(site._id);
+        trip.site_ids.unshift(site._id);
         trip.save()
           .then(savedTrip => {
             site.save()

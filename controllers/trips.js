@@ -16,7 +16,7 @@ module.exports = (app) => {
       notes: req.body.notes,
       coverImageUrl: req.body.coverImageUrl,
       hotel_ids: req.body.hotel_ids,
-      sites: req.body.sites,
+      site_ids: req.body.site_ids,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       userId: req.currentUser._id // user set by setCurrerntUser
@@ -42,7 +42,7 @@ module.exports = (app) => {
       userId: req.currentUser._id
     })
       .populate('hotel_ids')
-      .populate('sites')
+      .populate('site_ids')
       .populate('userId')
       .then(trips => {
         res.status(200).json(trips)
@@ -85,7 +85,7 @@ module.exports = (app) => {
 
           })
             .then(updatedTrip => {
-              const opts = [{ path: 'hotel_ids' }, { path: 'sites' }];
+              const opts = [{ path: 'hotel_ids' }, { path: 'site_ids' }];
 
               // Ensures that all hotels and sites get populated into the updated trip
               Trip.populate(updatedTrip, opts, function (err, populatedTrip) {
@@ -146,7 +146,7 @@ module.exports = (app) => {
                   path: 'hotel_ids'
                 },
                 {
-                  path: 'sites'
+                  path: 'site_ids'
                 }
                 ];
 
