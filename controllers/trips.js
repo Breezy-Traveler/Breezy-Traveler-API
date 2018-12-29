@@ -15,8 +15,8 @@ module.exports = (app) => {
       place: req.body.place,
       notes: req.body.notes,
       coverImageUrl: req.body.coverImageUrl,
-      hotel_ids: req.body.hotels,
-      site_ids: req.body.sites,
+      hotel_ids: req.body.hotel_ids,
+      site_ids: req.body.site_ids,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       userId: req.currentUser._id // user set by setCurrerntUser
@@ -40,8 +40,8 @@ module.exports = (app) => {
     Trip.find({
         userId: req.currentUser._id
       })
-      .populate('hotels')
-      .populate('sites')
+      .populate('hotel_ids')
+      .populate('site_ids')
       .populate('userId')
       .then(trips => {
         res.status(200).json(trips)
@@ -56,8 +56,8 @@ module.exports = (app) => {
   // READ one trip
   app.get('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
     Trip.findById(req.params.id)
-      .populate('hotels')
-      .populate('sites')
+      .populate('hotel_ids')
+      .populate('site_ids')
       .populate('userId')
       .then(trip => {
         res.status(200).json(trip)
@@ -85,9 +85,9 @@ module.exports = (app) => {
             })
             .then(updatedTrip => {
               const opts = [{
-                path: 'hotels'
+                path: 'hotel_ids'
               }, {
-                path: 'sites'
+                path: 'site_ids'
               }];
 
               // Ensures that all hotels and sites get populated into the updated trip
