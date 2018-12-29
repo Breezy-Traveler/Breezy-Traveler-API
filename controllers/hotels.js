@@ -15,18 +15,21 @@ module.exports = (app) => {
         tripId: req.params.id
       });
 
-      // console.log("Hotel IDs: ", trip.hotel_ids)
-      trip.hotel_ids.push(hotel._id);
-      trip.save()
-        .then(savedTrip => {
-          hotel.save()
-            .then(savedHotel => {
-              res.status(201).json(savedHotel)
+      hotel.save()
+        .then(savedHotel => {
+          trip.hotel_ids.push(savedHotel._id);
+          trip.save()
+            .then(savedTrip => {
+              res.status(201).json({
+                'New hotel': savedHotel,
+                'Updated trip': savedTrip
+              })
             })
-            .catch(err => {
-              if (err) {
-                res.status(401).json({
-                  'Error': err.message
+            .catch(error => {
+              if (error) {
+                res.status(400).json({
+                  'Error': error.message,
+                  'Debug': 'error updating trip with hotel'
                 })
               }
             })
@@ -34,7 +37,8 @@ module.exports = (app) => {
         .catch(err => {
           if (err) {
             res.status(401).json({
-              'Error': err.message
+              'Error': err.message,
+              'Debug': 'catch block save hotel'
             })
           }
         })

@@ -31,41 +31,28 @@ TripSchema.pre('save', function (next) {
   next()
 });
 
-TripSchema.pre('remove', function (next) {
-  // 'this' is the trip being removed. 
-  // Provide callbacks here to be notified of the calls' result
-  console.log('Hotel ids array: ', this.hotel_ids)
+TripSchema.post('remove', function () {
+  // 'this' is the trip being removed
+  // Iterate through the hotel ids, and remove them from the db
   this.hotel_ids.forEach(function (_id) {
-    // id = id.replace(/\s/g,'');
-    console.log("type: ", typeof _id.toString())
-    console.log("inside the forEach hotel_id: ", _id)
-    Hotel.findByIdAndRemove({
-        _id
-      })
-      .exec(removedHotel => {
+    Hotel.findByIdAndRemove({ _id })
+      .exec((err, removedHotel) => {        
+        if (err) {
+          console.log("Callback Trip pre remove: ", err.message)
+        }
         console.log('removed hotel: ', removedHotel)
       })
-      .catch(err => {
-        if (err) {
-          console.log("Catch block Hotel.findByIdAndRemove(): ", err.message)
-        }
-      });
   });
 
-  // this.site_ids.forEach(function(siteId) {
-  //   Site.findByIdAndRemove({
-  //     site_id: siteId
-  //   })
-  //   .exec(removedSite => {
-  //     console.log('removed site: ', removedSite)
-  //   })
-  //   .catch(err => {
-  //     if (err) {
-  //       console.log(err.message)
-  //     }
-  //   });
-  // });
-  next();
+  this.site_ids.forEach(function (_id) {
+    Site.findByIdAndRemove({ _id })
+      .exec((err, removedSite) => {        
+        if (err) {
+          console.log("Callback Trip pre remove: ", err.message)
+        }
+        console.log('removed site: ', removedSite)
+      })
+  });
 });
 
 

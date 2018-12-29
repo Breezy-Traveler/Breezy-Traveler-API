@@ -114,10 +114,10 @@ module.exports = (app) => {
     const currUserId = req.currentUser._id
     // Check if the trip belongs to the user
     Trip.findOne({_id: req.params.id}, function(err, foundTrip){
-      console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
+      // console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
 
       if (currUserId.equals(foundTrip.userId)) {
-        console.log("******* This trip belongs to this user *******")
+        // console.log("******* This trip belongs to this user *******")
         foundTrip.remove().then(removedTrip => {
           console.log("Your trip was removed")
           res.status(200).json(removedTrip)
