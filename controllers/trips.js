@@ -15,13 +15,12 @@ module.exports = (app) => {
       place: req.body.place,
       notes: req.body.notes,
       coverImageUrl: req.body.coverImageUrl,
-      hotel_ids: req.body.hotel_ids,
-      site_ids: req.body.site_ids,
+      hotel_ids: req.body.hotels,
+      site_ids: req.body.sites,
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       userId: req.currentUser._id // user set by setCurrerntUser
     });
-
 
     trip.save()
       .then(trip => {
