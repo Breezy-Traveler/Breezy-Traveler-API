@@ -60,6 +60,10 @@ module.exports = (app) => {
       .populate('site_ids')
       .populate('userId')
       .then(trip => {
+        if (!trip) {
+          return res.status(404).json({ error: "Trip not found" })
+        }
+        
         res.status(200).json(trip)
       })
       .catch(err => {
@@ -78,6 +82,10 @@ module.exports = (app) => {
       .then(foundTrip => {
         // Check if the trip belongs to the current user
         // console.log('UID & Trip UID: ', currUserId, foundTrip)
+        if (!foundTrip) {
+          return res.status(404).json({ error: "Trip not found" })
+        }
+        
         if (currUserId.equals(foundTrip.userId)) {
           Trip.findByIdAndUpdate(req.params.id, req.body, {
               new: true
@@ -115,6 +123,9 @@ module.exports = (app) => {
     // Check if the trip belongs to the user
     Trip.findOne({_id: req.params.id}, function(err, foundTrip){
       // console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
+      if (!foundTrip) {
+        return res.status(404).json({ error: "Trip not found" })
+      }
 
       if (currUserId.equals(foundTrip.userId)) {
         // console.log("******* This trip belongs to this user *******")
