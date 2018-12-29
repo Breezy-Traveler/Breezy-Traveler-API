@@ -120,7 +120,7 @@ module.exports = (app) => {
         // console.log("******* This trip belongs to this user *******")
         foundTrip.remove().then(removedTrip => {
           console.log("Your trip was removed")
-          res.status(200).json(removedTrip)
+          res.status(202).json()
         })
         .catch(err => {
           if (err) {
