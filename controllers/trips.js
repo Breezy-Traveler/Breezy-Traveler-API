@@ -38,8 +38,8 @@ module.exports = (app) => {
   // READ all trips
   app.get('/trips', authorized.required, setCurrentUser, (req, res) => {
     Trip.find({
-      userId: req.currentUser._id
-    })
+        userId: req.currentUser._id
+      })
       .populate('hotels')
       .populate('sites')
       .populate('userId')
@@ -80,11 +80,15 @@ module.exports = (app) => {
         // console.log('UID & Trip UID: ', currUserId, foundTrip)
         if (currUserId.equals(foundTrip.userId)) {
           Trip.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
+              new: true
 
-          })
+            })
             .then(updatedTrip => {
-              const opts = [{ path: 'hotels' }, { path: 'sites' }];
+              const opts = [{
+                path: 'hotels'
+              }, {
+                path: 'sites'
+              }];
 
               // Ensures that all hotels and sites get populated into the updated trip
               Trip.populate(updatedTrip, opts, function (err, populatedTrip) {
@@ -106,89 +110,30 @@ module.exports = (app) => {
 
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
+    console.log("inside app.delete")
     const currUserId = req.currentUser._id
     // Check if the trip belongs to the user
-    Trip.findById(req.params.id)
-      .then(foundTrip => {
-        // Validate the trip belongs to the current user
-        // console.log('UID & Trip UID: ', currUserId, foundTrip.userId)
-        // console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
-        if (currUserId.equals(foundTrip.userId)) {
-          // Use the hotel_ids to search the hotel collection and remove them
-          foundTrip.hotel_ids.forEach(function (hotel_id) {
-            Hotel.findByIdAndRemove(hotel_id)
-              .then(removedHotel => {
-                // console.log('your hotel was removed')
-                const opts = [{ path: 'hotels' }, { path: 'sites' }];
+    Trip.findOne({_id: req.params.id}, function(err, foundTrip){
+      console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
 
-                // Ensures that all hotels and sites get populated into the updated trip
-                Trip.populate(foundTrip, opts, function (err, populatedTrip) {
-                  // console.log(populatedTrip)
-                })
-                // console.log(removedHotel);
-              })
-              .catch(err => {
-                if (err) {
-                  res.status(400).json({
-                    'Error': err.message
-                  })
-                }
-              })
-          });
-
-          // Use the site_ids to search the site collection and remove them
-          foundTrip.site_ids.forEach(function (site_id) {
-            Site.findByIdAndRemove(site_id)
-              .then(removedSite => {
-                // console.log('your site was removed')
-                const opts = [{
-                  path: 'hotels'
-                },
-                {
-                  path: 'sites'
-                }
-                ];
-
-                // Ensures that all sites and sites get populated into the updated trip
-                Trip.populate(foundTrip, opts, function (err, populatedTrip) {
-                  // console.log(populatedTrip)
-                })
-                // console.log(removedSite);
-              })
-              .catch(err => {
-                if (err) {
-                  res.status(400).json({
-                    'Error': err.message
-                  })
-                }
-              })
-          });
-
-
-          foundTrip.remove()
-            .then(removedTrip => {
-              if (removedTrip) {
-                console.log('your trip was removed')
-                res.status(200).json(removedTrip);
-              } else {
-                res.status(404).json({
-                  'Error': 'Error deleting trip'
-                })
-              }
-            }) // <----- end of then()
-            .catch(err => {
-              if (err) {
-                res.status(400).json({
-                  'Error': 'Trip not found'
-                })
-              }
-            })
-        } else {
-          res.status(401).json({
-            'Error': "Sorry can't delete this trip"
-          })
-        }
-      })
+      if (currUserId.equals(foundTrip.userId)) {
+        console.log("******* This trip belongs to this user *******")
+        foundTrip.remove().then(removedTrip => {
+          console.log("Your trip was removed")
+          res.status(200).json(removedTrip)
+        })
+        .catch(err => {
+          if (err) {
+            res.status(400).json({'Error': err.message, 'Debug': "Catch block remove trip"})
+          }
+        })
+        
+      } else {
+        res.status(401).json({
+          'Error': "Sorry can't delete this trip"
+        })
+      }
+    })
   });
 
   /*********************** Published Trip *********************/
