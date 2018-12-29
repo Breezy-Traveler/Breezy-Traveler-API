@@ -1,6 +1,7 @@
 // models/hotels.js
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const Trip = require('./trip')
 
 const HotelSchema = new Schema({
   createdAt     : { type: Date    },
@@ -19,6 +20,16 @@ HotelSchema.pre('save', function(next) {
     this.createdAt = now
   }
   next()
+});
+
+HotelSchema.pre('remove', function(next) {
+  console.log("the hotel pre remove function was called")
+    Trip.update(
+        { hotel_ids : this._id},
+        { $pull: { hotel_ids: this._id } },
+        { multi: true })  // if reference exists in multiple documents
+    .exec();
+    next();
 });
 
 module.exports = mongoose.model('Hotel', HotelSchema);
