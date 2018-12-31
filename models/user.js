@@ -1,5 +1,4 @@
 // models/users.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
@@ -38,11 +37,13 @@ UserSchema.methods.generateJWT = function() {
   const expirationDate = new Date(today);
   expirationDate.setDate(today.getDate() + 90);
 
-  return jwt.sign({
-    email: this.email,
-    id: this._id,
-    exp: parseInt(expirationDate.getTime() / 1000, 10),
-  }, process.env.SECRET);
+  return jwt.sign(
+    {
+      email: this.email,
+      id: this._id,
+      exp: parseInt(expirationDate.getTime() / 1000, 10),
+    },
+    process.env.SECRET)
 };
 
 UserSchema.methods.toAuthJSON = function() {
@@ -50,7 +51,7 @@ UserSchema.methods.toAuthJSON = function() {
 };
 
 UserSchema.statics.currentUser = function(token, done) {
-	this.findOne({ 'local.token': token}, done)
+	this.findOne({ 'local.token': token }, done)
 };
 
 UserSchema.plugin(uniqueValidator);

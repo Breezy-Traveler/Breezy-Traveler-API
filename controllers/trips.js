@@ -189,8 +189,6 @@ module.exports = (app) => {
       })
   });
 
-
-
   /*********************** Getty Images *********************/
   const apiKey = process.env.GETTY_KEY;
   const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';

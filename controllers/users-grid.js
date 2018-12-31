@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-
 var formidable = require('formidable');
 var mongoose = require('mongoose');
 var grid = require('gridfs-stream');
 var fs = require('fs');
+
 const Schema = mongoose.Schema;
 const UserProfileImageSchema = Schema({
   payload: Schema.Types.Mixed, //image is stored here
@@ -12,7 +12,6 @@ const UserProfileImageSchema = Schema({
 });
 
 //const PImage = mongoose.model('UserProfileImage', UserProfileImageSchema)
-
 router.post('/image-multipart', (req, res, next) => {
   var form = new formidable.IncomingForm();
 

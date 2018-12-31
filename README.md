@@ -1,1 +1,1 @@
-Breezy Traveler
+Breezy Traveler is social travel app that allows the user to organizer their Trip in one place, and invite friends to join them on their trip.
