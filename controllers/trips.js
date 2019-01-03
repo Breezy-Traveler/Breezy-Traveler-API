@@ -24,7 +24,18 @@ module.exports = (app) => {
 
     trip.save()
       .then(trip => {
-        res.status(201).json(trip)
+        const opts = [{
+          path: 'hotel_ids'
+        }, {
+          path: 'site_ids'
+        }, {
+          path: 'userId'
+        }];
+
+        // Ensures that all hotels and sites get populated into the updated trip
+        Trip.populate(trip, opts, function (err, populatedTrip) {
+          res.status(201).json(populatedTrip)
+        })
       })
       .catch(err => {
         if (err) {
@@ -99,6 +110,8 @@ module.exports = (app) => {
                 path: 'hotel_ids'
               }, {
                 path: 'site_ids'
+              }, {
+                path: 'userId'
               }];
 
               // Ensures that all hotels and sites get populated into the updated trip
@@ -186,6 +199,7 @@ module.exports = (app) => {
     Trip.find(filter).limit(limiter)
       .populate('hotel_ids')
       .populate('site_ids')
+      .populate('userId')
       .then(trips => {
         res.status(200).json(trips)
       })
