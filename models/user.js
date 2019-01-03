@@ -1,26 +1,25 @@
 // models/users.js
-
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 
-const UserSchema = mongoose.Schema(
-  {
-    local: {
-      username   : { type: String, unique: true },
-      email      : { type: String, unique: true },
-      password   : { type: String, required: true },
-      token      : { type: String }
-    },
-    facebook: {
-      id         : String,
-      token      : String,
-      name       : String,
-      email      : String
-    }
-  }
-);
+const UserSchema = Schema({
+  local           : {
+    username      : { type: String, unique: true },
+    email         : { type: String, unique: true },
+    password      : { type: String, required: true },
+    token         : { type: String }
+  },
+  facebook         : {
+    id           : String,
+    token        : String,
+    name         : String,
+    email        : String
+  },
+  profileImage   : { type: Schema.Types.ObjectId, ref: 'UserProfileImage' }
+});
 
 // METHODS ==============================
 // GENERATE HASH

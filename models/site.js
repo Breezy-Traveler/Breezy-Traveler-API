@@ -26,7 +26,7 @@ SiteSchema.pre('remove', function(next) {
     Client.update(
         { site_ids : this._id},
         { $pull: { site_ids: this._id } },
-        { multi: true })  //if reference exists in multiple documents
+        { multi: true })  // if reference exists in multiple documents
     .exec();
     next();
 });
