@@ -29,7 +29,8 @@ module.exports = (app) => {
       .catch(err => {
         if (err) {
           res.status(401).json({
-            'Error': err.message
+            error: err.message,
+            debug: 'Route: app.post(/trips)'
           })
         }
       })
@@ -48,7 +49,7 @@ module.exports = (app) => {
       })
       .catch(err => {
         res.status(401).json({
-          'Error': err.message
+          error: err.message
         })
       })
   });
@@ -61,14 +62,16 @@ module.exports = (app) => {
       .populate('userId')
       .then(trip => {
         if (!trip) {
-          return res.status(404).json({ error: "Trip not found" })
+          return res.status(404).json({
+            error: 'Trip not found'
+          })
         }
-        
+
         res.status(200).json(trip)
       })
       .catch(err => {
         res.status(401).json({
-          'Error': `${err.message}`
+          error: err.message
         })
       })
   });
@@ -76,16 +79,16 @@ module.exports = (app) => {
   // UPDATE a Trip
   app.put('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
     const currUserId = req.currentUser._id
-    // console.log("User ID: ", currUserId)
-    // Check if the trip belongs to the user
+    
     Trip.findById(req.params.id)
       .then(foundTrip => {
         // Check if the trip belongs to the current user
-        // console.log('UID & Trip UID: ', currUserId, foundTrip)
         if (!foundTrip) {
-          return res.status(404).json({ error: "Trip not found" })
+          return res.status(404).json({
+            error: "Trip not found"
+          })
         }
-        
+
         if (currUserId.equals(foundTrip.userId)) {
           Trip.findByIdAndUpdate(req.params.id, req.body, {
               new: true
@@ -105,12 +108,12 @@ module.exports = (app) => {
             })
             .catch(err => {
               res.status(401).json({
-                'Error': err.message
+                error: err.message
               })
             })
         } else {
           res.status(401).json({
-            "Error": "Sorry can't modify this trip"
+            error: "Sorry can't modify this trip"
           })
         }
       })
@@ -118,30 +121,34 @@ module.exports = (app) => {
 
   // DELETE Trip
   app.delete('/trips/:id', authorized.required, setCurrentUser, (req, res) => {
-    console.log("inside app.delete")
     const currUserId = req.currentUser._id
     // Check if the trip belongs to the user
-    Trip.findOne({_id: req.params.id}, function(err, foundTrip){
-      // console.log("Delete Trip hotels: ", foundTrip.hotel_ids)
+    Trip.findOne({
+      _id: req.params.id
+    }, function (err, foundTrip) {
       if (!foundTrip) {
-        return res.status(404).json({ error: "Trip not found" })
+        return res.status(404).json({
+          error: "Trip not found"
+        })
       }
 
       if (currUserId.equals(foundTrip.userId)) {
-        // console.log("******* This trip belongs to this user *******")
         foundTrip.remove().then(removedTrip => {
-          console.log("Your trip was removed")
-          res.status(202).json()
-        })
-        .catch(err => {
-          if (err) {
-            res.status(400).json({'Error': err.message, 'Debug': "Catch block remove trip"})
-          }
-        })
-        
+            console.log("Your trip was removed")
+            res.status(202).json()
+          })
+          .catch(err => {
+            if (err) {
+              res.status(400).json({
+                error: err.message,
+                debug: "Catch block remove trip"
+              })
+            }
+          })
+
       } else {
         res.status(401).json({
-          'Error': "Sorry can't delete this trip"
+          error: "Sorry can't delete this trip"
         })
       }
     })
@@ -150,13 +157,13 @@ module.exports = (app) => {
   /*********************** Published Trip *********************/
   // READ public trips
   app.get('/publishedTrips', authorized.required, setCurrentUser, (req, res) => {
-    var filter = null
+    let filter = null
     // is search qurery defined
     const searchTerm = req.query.searchTerm
     const searchLimit = req.query.limit
-    var limiter = 0
+    let limiter = 0
 
-    // Returns all trips.isPublic that place matches search term
+    // Returns all trips.isPublic where place matches search term
     if (searchTerm) {
       filter = {
         $text: {
@@ -170,7 +177,7 @@ module.exports = (app) => {
         isPublic: true
       }
     } else {
-      // No query return all public trips
+      // No query returns all public trips
       filter = {
         isPublic: true
       }
@@ -184,7 +191,7 @@ module.exports = (app) => {
       })
       .catch(err => {
         res.status(401).json({
-          'Error': err.message
+          error: err.message
         })
       })
   });
@@ -194,11 +201,9 @@ module.exports = (app) => {
   const gettyUrl = 'https://api.gettyimages.com/v3/search/images?phrase=';
   require('querystring');
 
-
   app.get('/image-search', (req, res) => {
     // Access the provided 'phrase' query parameter
     let phrase = req.query.phrase.toLowerCase();
-    // console.log('Params: ', phrase);
 
     const searchTerm = phrase;
     const options = {
@@ -212,7 +217,7 @@ module.exports = (app) => {
     request(options, (err, response, body) => {
       if (err) {
         res.status(500).json({
-          'Error: ': `${err.message}`
+          error: err.message
         })
       } else {
         const jsonObj = JSON.parse(body);

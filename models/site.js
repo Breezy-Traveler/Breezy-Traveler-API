@@ -23,7 +23,6 @@ SiteSchema.pre('save', function(next) {
 });
 
 SiteSchema.pre('remove', function(next) {
-  console.log("the site pre remove function was called")
     Client.update(
         { site_ids : this._id},
         { $pull: { site_ids: this._id } },

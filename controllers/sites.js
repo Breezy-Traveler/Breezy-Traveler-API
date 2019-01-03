@@ -28,8 +28,8 @@ module.exports = (app) => {
             .catch(error => {
               if (error) {
                 res.status(400).json({
-                  'Error': error.message,
-                  'Debug': 'error updating trip with site'
+                  error: error.message,
+                  debug: 'error updating trip with site'
                 })
               }
             })
@@ -37,8 +37,8 @@ module.exports = (app) => {
         .catch(err => {
           if (err) {
             res.status(401).json({
-              'Error': err.message,
-              'Debug': 'catch block save site'
+              error: err.message,
+              debug: 'catch block save site'
             })
           }
         })
@@ -57,7 +57,7 @@ module.exports = (app) => {
           })
           .catch(err => {
             res.status(401).json({
-              'Error': `${err.message}`
+              error: `${err.message}`
             })
           })
       })
@@ -74,12 +74,12 @@ module.exports = (app) => {
             })
             .catch(err => {
               res.status(401).json({
-                'Error': `${err.message}`
+                error: `${err.message}`
               })
             })
         } else {
           res.status(404).json({
-            'Error': 'No trip found'
+            error: 'No trip found'
           })
         }
       })
@@ -97,13 +97,13 @@ module.exports = (app) => {
           })
           .catch(err => {
             res.status(401).json({
-              'Error': err.message
+              error: err.message
             })
           })
       })
       .catch(err => {
         res.status(401).json({
-          'Error': err.message
+          error: err.message
         })
       })
   });
@@ -121,24 +121,24 @@ module.exports = (app) => {
                 res.status(202).json()
               } else {
                 res.status(404).json({
-                  'Error': 'No site found'
+                  error: 'No site found'
                 })
               }
             })
             .catch(err => {
               res.status(400).json({
-                'Error': 'No site found'
+                error: 'No site found'
               })
             })
         } else {
           res.status(404).json({
-            'Error': 'No trip found'
+            error: 'No trip found'
           })
         }
       })
       .catch(err => {
         res.status(400).json({
-          'Error': 'Bad request'
+          error: 'Bad request'
         })
       })
   });

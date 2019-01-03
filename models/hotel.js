@@ -23,7 +23,6 @@ HotelSchema.pre('save', function(next) {
 });
 
 HotelSchema.pre('remove', function(next) {
-  console.log("the hotel pre remove function was called")
     Trip.update(
         { hotel_ids : this._id},
         { $pull: { hotel_ids: this._id } },
