@@ -20,10 +20,7 @@ module.exports = (app) => {
           trip.hotel_ids.push(savedHotel._id);
           trip.save()
             .then(savedTrip => {
-              res.status(201).json({
-                'New hotel': savedHotel,
-                'Updated trip': savedTrip
-              })
+              res.status(201).json(savedHotel)
             })
             .catch(error => {
               if (error) {
