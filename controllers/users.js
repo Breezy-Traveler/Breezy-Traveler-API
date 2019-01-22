@@ -13,11 +13,19 @@ module.exports = (app, passport) => {
   app.post('/login', function (req, res, next) {
     passport.authenticate('local-login', function (err, user) {
 
-      if (err) { return next(err); }
-      if (!user) { return res.status(401).json({ 'Error': 'Unauthorized' }); }
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.status(401).json({
+          'Error': 'Unauthorized'
+        });
+      }
 
       req.logIn(user, function (err) {
-        if (err) { return next(err); }
+        if (err) {
+          return next(err);
+        }
         return res.status(200).json(user);
       });
     })(req, res, next);
@@ -32,13 +40,21 @@ module.exports = (app, passport) => {
     const password = req.body.password;
 
     if (!username && !email && !password) {
-      return res.status(400).json({ 'Error': 'Must provide all user credentials' })
+      return res.status(400).json({
+        'Error': 'Must provide all user credentials'
+      })
     } else if (!username) {
-      return res.status(400).json({ 'Error': 'Must provide username' })
+      return res.status(400).json({
+        'Error': 'Must provide username'
+      })
     } else if (!email) {
-      return res.status(400).json({ 'Error': 'Must provide valid email' })
+      return res.status(400).json({
+        'Error': 'Must provide valid email'
+      })
     } else if (!password) {
-      return res.status(400).json({ 'Error': 'Must provide valid password' })
+      return res.status(400).json({
+        'Error': 'Must provide valid password'
+      })
     }
 
     passport.authenticate('local-signup', function (err, user) {
@@ -49,16 +65,25 @@ module.exports = (app, passport) => {
         let usernameError = false;
 
         for (let i = 0; i < foundErr.length; i++) {
-          if (foundErr[i] === '`local.email`') { emailError = true }
-          else if (foundErr[i] === '`local.username`') { usernameError = true }
+          if (foundErr[i] === '`local.email`') {
+            emailError = true
+          } else if (foundErr[i] === '`local.username`') {
+            usernameError = true
+          }
         }
 
         if (emailError && usernameError) {
-          return res.status(401).json({ 'Error': 'Email and Username taken' })
+          return res.status(401).json({
+            'Error': 'Email and Username taken'
+          })
         } else if (emailError) {
-          return res.status(401).json({ 'Error': 'Email already taken' })
+          return res.status(401).json({
+            'Error': 'Email already taken'
+          })
         } else {
-          return res.status(401).json({ 'Error': 'Username already taken' })
+          return res.status(401).json({
+            'Error': 'Username already taken'
+          })
         }
       }
 
@@ -114,7 +139,9 @@ module.exports = (app, passport) => {
 
       request(options, (err, response, body) => {
         if (err) {
-          res.status(400).json({ 'Error: ': `${err.message}` })
+          res.status(400).json({
+            'Error: ': `${err.message}`
+          })
         } else {
           res.status(200).send(body)
         }
