@@ -4,7 +4,7 @@ const Users = require('../models/user');
 module.exports = (req, res, next) => {
   Users.findOne({ 'local.token': req.token }, (error, user) => {
     if (error) {
-      return res.status(500).json(error)
+      return res.status(500).json(error);
     }
 
     if (!user) {
@@ -13,6 +13,6 @@ module.exports = (req, res, next) => {
 
     req.currentUser = user
 
-    next()
+    next();
   });
 }
